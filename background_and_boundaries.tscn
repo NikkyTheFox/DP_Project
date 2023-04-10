@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://c1wxcyxgetp3p"]
+
+[ext_resource type="Texture2D" uid="uid://bd2cttr2ag43s" path="res://grafika/background.png" id="1_bu4bn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_khgfs"]
+size = Vector2(20.5, 1457)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a23qi"]
+size = Vector2(15.5, 1521.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5eo8a"]
+size = Vector2(2621, 18)
+
+[node name="Background_and_boundaries" type="StaticBody2D"]
+
+[node name="Right_collision_box" type="CollisionShape2D" parent="."]
+position = Vector2(1928.75, 360.5)
+shape = SubResource("RectangleShape2D_khgfs")
+
+[node name="Left_collision_box" type="CollisionShape2D" parent="."]
+position = Vector2(-647.25, 361)
+shape = SubResource("RectangleShape2D_a23qi")
+
+[node name="Upper_collision_box" type="CollisionShape2D" parent="."]
+position = Vector2(659, -368)
+shape = SubResource("RectangleShape2D_5eo8a")
+
+[node name="Bottom_collision_box" type="CollisionShape2D" parent="."]
+position = Vector2(641, 1088)
+shape = SubResource("RectangleShape2D_5eo8a")
+
+[node name="Grass_backgroud" type="Sprite2D" parent="."]
+texture_repeat = 2
+position = Vector2(640, 360)
+texture = ExtResource("1_bu4bn")
+region_enabled = true
+region_rect = Rect2(0, 0, 2560, 1440)

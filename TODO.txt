@@ -1,0 +1,5 @@
+Player script
+Camera following player
+Camera limits ( https://www.youtube.com/watch?v=oBggwTeDMZY&ab_channel=Chris%27Tutorials )
+Test moving out of world map boundaries
+Player pov?
