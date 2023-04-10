@@ -1,0 +1,88 @@
+[gd_scene load_steps=7 format=3 uid="uid://bymmo182ln2u6"]
+
+[ext_resource type="PackedScene" uid="uid://c1wxcyxgetp3p" path="res://background_and_boundaries.tscn" id="1_mrqhq"]
+[ext_resource type="PackedScene" uid="uid://ds82mrs23btxh" path="res://bush.tscn" id="2_x0t2w"]
+[ext_resource type="PackedScene" uid="uid://ddvahstikf6uu" path="res://tree_trunk_1.tscn" id="3_tf7q3"]
+[ext_resource type="PackedScene" uid="uid://cm8nb2l2x6k2d" path="res://rock.tscn" id="4_bmw38"]
+[ext_resource type="PackedScene" uid="uid://ccqsbsraigsmb" path="res://player.tscn" id="5_brgy8"]
+[ext_resource type="PackedScene" uid="uid://xtyow8se78g3" path="res://mushroom.tscn" id="6_roj1t"]
+
+[node name="World" type="Node2D"]
+
+[node name="Background_and_boundaries" parent="." instance=ExtResource("1_mrqhq")]
+position = Vector2(3, 37)
+
+[node name="Player" parent="." instance=ExtResource("5_brgy8")]
+position = Vector2(507, 299)
+
+[node name="Bush" parent="." instance=ExtResource("2_x0t2w")]
+position = Vector2(-486, -176)
+
+[node name="Tree_trunk_1" parent="." instance=ExtResource("3_tf7q3")]
+position = Vector2(-156, -18)
+
+[node name="Bush2" parent="." instance=ExtResource("2_x0t2w")]
+position = Vector2(-388, 529)
+
+[node name="Rock" parent="." instance=ExtResource("4_bmw38")]
+position = Vector2(304, 334)
+
+[node name="Tree_trunk_2" parent="." instance=ExtResource("3_tf7q3")]
+position = Vector2(-273, 795)
+
+[node name="Bush3" parent="." instance=ExtResource("2_x0t2w")]
+position = Vector2(791, 192)
+
+[node name="Bush4" parent="." instance=ExtResource("2_x0t2w")]
+position = Vector2(488, 698)
+
+[node name="Rock2" parent="." instance=ExtResource("4_bmw38")]
+position = Vector2(805, 498)
+
+[node name="Tree_trunk_3" parent="." instance=ExtResource("3_tf7q3")]
+position = Vector2(1158, 755)
+
+[node name="Rock3" parent="." instance=ExtResource("4_bmw38")]
+position = Vector2(1283, 160)
+
+[node name="Tree_trunk_4" parent="." instance=ExtResource("3_tf7q3")]
+position = Vector2(1518, -164)
+
+[node name="Rock4" parent="." instance=ExtResource("4_bmw38")]
+position = Vector2(855, -229)
+
+[node name="Mushroom" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(-223, 298)
+
+[node name="Mushroom2" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(178, -95)
+
+[node name="Mushroom3" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(714, 89)
+
+[node name="Mushroom4" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(969, 588)
+
+[node name="Mushroom5" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(1624, 615)
+
+[node name="Mushroom6" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(795, 898)
+
+[node name="Bush5" parent="." instance=ExtResource("2_x0t2w")]
+position = Vector2(1619, 915)
+
+[node name="Bush6" parent="." instance=ExtResource("2_x0t2w")]
+position = Vector2(719, 857)
+
+[node name="Rock5" parent="." instance=ExtResource("4_bmw38")]
+position = Vector2(195, 982)
+
+[node name="Bush7" parent="." instance=ExtResource("2_x0t2w")]
+position = Vector2(1498, 427)
+
+[node name="Mushroom7" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(-422, 948)
+
+[node name="Mushroom8" parent="." instance=ExtResource("6_roj1t")]
+position = Vector2(1196, -161)
