@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kgy4v0dk5187"
-path="res://.godot/imported/rock.png-ec04aa8f21ba3c66b6a502447a635dc4.ctex"
+uid="uid://cj3gx6y2am7qa"
+path="res://.godot/imported/mushroom.png-e57e6472a0059de0fdf65559cb4415f8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://grafika/rock.png"
-dest_files=["res://.godot/imported/rock.png-ec04aa8f21ba3c66b6a502447a635dc4.ctex"]
+source_file="res://grafika2/mushroom.png"
+dest_files=["res://.godot/imported/mushroom.png-e57e6472a0059de0fdf65559cb4415f8.ctex"]
 
 [params]
 
