@@ -11,6 +11,6 @@ height = 56.0
 texture = ExtResource("1_yf5vk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 47)
+position = Vector2(-3, 48)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_mxov3")

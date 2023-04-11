@@ -130,8 +130,8 @@ texture = ExtResource("9_trijb")
 height = 1.0
 
 [node name="PointLight2D2" type="PointLight2D" parent="Player"]
-position = Vector2(127.75, 125)
-scale = Vector2(40.4922, -22.2813)
+position = Vector2(184, 87)
+scale = Vector2(51.4375, -32.5938)
 blend_mode = 1
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_lxh5j")
