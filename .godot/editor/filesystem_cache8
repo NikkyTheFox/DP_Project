@@ -1,8 +1,15 @@
 2a60927148abd1d33b818b535e306557
-::res://::1681117510
+::res://::1681125001
+background_and_boundaries.tscn::PackedScene::6644568971355425627::1681124171::0::1::::<><>::uid://bd2cttr2ag43s
+bush.tscn::PackedScene::8492447412747079817::1681124152::0::1::::<><>::uid://cc2n1ol523ssj
 icon2.svg::CompressedTexture2D::197864297506428156::1680849815::1680850527::1::::<><>::
-README.md::TextFile::-1::1680851970::0::1::::<><>::
-world.tscn::PackedScene::4096480486910110187::1681117510::0::1::::<><>::uid://cc2n1ol523ssj
+mushroom.tscn::PackedScene::1655049997259672236::1681124152::0::1::::<><>::uid://dp3kobax7ej2m
+player.tscn::PackedScene::4947344762083849937::1681124152::0::1::::<><>::uid://cbx8gd52cyy52
+README.md::TextFile::-1::1681124261::0::1::::<><>::
+rock.tscn::PackedScene::5684024500008457801::1681124152::0::1::::<><>::uid://c83qyv00qek64
+TODO.txt::TextFile::-1::1681124435::0::1::::<><>::
+tree_trunk_1.tscn::PackedScene::7413193990534656192::1681124152::0::1::::<><>::uid://b5tmcr3pwj7on
+world.tscn::PackedScene::4096480486910110187::1681124346::0::1::::<><>::uid://c1wxcyxgetp3p<>uid://ds82mrs23btxh<>uid://ddvahstikf6uu<>uid://cm8nb2l2x6k2d<>uid://ccqsbsraigsmb<>uid://xtyow8se78g3
 ::res://addons/::1680850549
 ::res://addons/godot-git-plugin/::1680850549
 git_plugin.gdextension::GDExtension::-1::1677688130::0::1::::<><>::
@@ -11,7 +18,7 @@ THIRDPARTY.md::TextFile::-1::1677688130::0::1::::<><>::
 ::res://addons/godot-git-plugin/linux/::1680850549
 ::res://addons/godot-git-plugin/macos/::1680850549
 ::res://addons/godot-git-plugin/win64/::1680850549
-::res://grafika/::1681117222
+::res://grafika/::1681118200
 background.png::CompressedTexture2D::2652881803468892686::1681117184::1681118200::1::::<><>::
 bush.png::CompressedTexture2D::4969793759289388485::1681117184::1681117207::1::::<><>::
 mushroom.png::CompressedTexture2D::8270529507417092038::1681117184::1681117211::1::::<><>::
