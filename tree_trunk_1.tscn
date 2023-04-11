@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://ddvahstikf6uu"]
 
-[ext_resource type="Texture2D" uid="uid://b5tmcr3pwj7on" path="res://grafika/tree_trunk_1.png" id="1_0tquq"]
+[ext_resource type="Texture2D" uid="uid://d0xrhun6ori7t" path="res://grafika/tree_trunk_1.png" id="1_0tquq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fn8lm"]
-radius = 32.0
-height = 110.0
+radius = 42.0
+height = 142.0
 
 [node name="Tree_trunk_1" type="StaticBody2D"]
 
@@ -12,6 +12,5 @@ height = 110.0
 texture = ExtResource("1_0tquq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-12, 24)
-rotation = -1.5708
+position = Vector2(-7, -8)
 shape = SubResource("CapsuleShape2D_fn8lm")

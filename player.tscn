@@ -1,10 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://ccqsbsraigsmb"]
 
-[ext_resource type="Texture2D" uid="uid://cbx8gd52cyy52" path="res://grafika/player.png" id="1_yf5vk"]
+[ext_resource type="Texture2D" uid="uid://b6ghsfkj8pemp" path="res://grafika/player.png" id="1_yf5vk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mxov3"]
-radius = 16.0
-height = 38.0
+height = 56.0
 
 [node name="Player" type="CharacterBody2D"]
 
@@ -12,6 +11,6 @@ height = 38.0
 texture = ExtResource("1_yf5vk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-4, 42)
+position = Vector2(1, 47)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_mxov3")
