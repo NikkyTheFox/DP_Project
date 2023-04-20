@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0xrhun6ori7t"
-path="res://.godot/imported/tree_trunk_1.png-592e348d3fdd6483de61bf5b044793f6.ctex"
+uid="uid://cewdvo5ssj1mg"
+path="res://.godot/imported/test-removebg-preview (3).png-fca887dc2d7f67727fe5f5a04557d2db.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://grafika2/tree_trunk_1.png"
-dest_files=["res://.godot/imported/tree_trunk_1.png-592e348d3fdd6483de61bf5b044793f6.ctex"]
+source_file="res://grafika2/test-removebg-preview (3).png"
+dest_files=["res://.godot/imported/test-removebg-preview (3).png-fca887dc2d7f67727fe5f5a04557d2db.ctex"]
 
 [params]
 

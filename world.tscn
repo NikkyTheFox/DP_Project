@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://ccqsbsraigsmb" path="res://player.tscn" id="5_brgy8"]
 [ext_resource type="PackedScene" uid="uid://xtyow8se78g3" path="res://mushroom.tscn" id="6_roj1t"]
 [ext_resource type="Script" path="res://ScoreLabel.gd" id="9_207ro"]
-[ext_resource type="Texture2D" uid="uid://b7kh13cer4s87" path="res://grafika/2d_lights_and_shadows_neutral_point_light.webp" id="9_trijb"]
+[ext_resource type="Texture2D" uid="uid://bsrtrgd7b5kcc" path="res://grafika2/2d_lights_and_shadows_neutral_point_light.webp" id="9_trijb"]
 
 [sub_resource type="Gradient" id="Gradient_e6bii"]
 offsets = PackedFloat32Array(0, 0.00515464, 0.958763, 1)
@@ -32,7 +32,7 @@ light_mask = 3
 position = Vector2(-156, -18)
 
 [node name="Bush2" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(-388, 529)
+position = Vector2(-426, 561)
 
 [node name="Rock" parent="." instance=ExtResource("4_bmw38")]
 position = Vector2(304, 334)

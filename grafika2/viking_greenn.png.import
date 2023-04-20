@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0xrhun6ori7t"
-path="res://.godot/imported/tree_trunk_1.png-592e348d3fdd6483de61bf5b044793f6.ctex"
+uid="uid://dqlk0pagorqgw"
+path="res://.godot/imported/viking_greenn.png-7295fb83c2922cbde0be9728b3f9d8f6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://grafika2/tree_trunk_1.png"
-dest_files=["res://.godot/imported/tree_trunk_1.png-592e348d3fdd6483de61bf5b044793f6.ctex"]
+source_file="res://grafika2/viking_greenn.png"
+dest_files=["res://.godot/imported/viking_greenn.png-7295fb83c2922cbde0be9728b3f9d8f6.ctex"]
 
 [params]
 
