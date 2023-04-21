@@ -109,7 +109,7 @@ func go_to_mushroom():
 func _physics_process(delta):
 	temp_counter += delta
 	if temp_counter > 1:
-		print("my name is " +str(self.name) + " and my thread id is " + str(thread.get_id()))
+		print("my name is " +str(self.name) + " and my thread id is " + str(self.thread.get_id()))
 		temp_counter = 0
 	# check whether global mushroom array is empty
 	if globals.mushroom_array.is_empty():

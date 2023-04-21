@@ -117,7 +117,7 @@ editor_draw_limits = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 visible = false
-position = Vector2(-106, 309)
+position = Vector2(523, 50)
 limit_left = -634
 limit_top = -320
 limit_right = 1917

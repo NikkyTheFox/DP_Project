@@ -19,7 +19,7 @@ func _ready():
 func _process(_delta):	
 	temp_counter += _delta
 	if temp_counter > 1:
-		print("my name is " +str(self.name) + " and my thread id is " + str(thread.get_id()))
+		print("my name is " +str(self.name) + " and my thread id is " + str(self.thread.get_id()))
 		temp_counter = 0
 	# Creating new mushrooms during game
 	if mushroom_create_flag == true:
