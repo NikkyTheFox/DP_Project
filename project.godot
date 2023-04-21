@@ -15,6 +15,10 @@ run/main_scene="res://world.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Test="*res://test.gd"
+
 [display]
 
 window/size/viewport_width=1280
@@ -29,3 +33,11 @@ version_control/autoload_on_startup=true
 [layer_names]
 
 2d_render/layer_1="Mushroom"
+
+[physics]
+
+2d/run_on_separate_thread=true
+
+[rendering]
+
+driver/threads/thread_model=2

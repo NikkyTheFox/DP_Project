@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c1wxcyxgetp3p"]
 
-[ext_resource type="Texture2D" uid="uid://ds7jldsv1s5o3" path="res://grafika/background.png" id="1_bu4bn"]
+[ext_resource type="Texture2D" uid="uid://c6ep26vkre46a" path="res://grafika/background.png" id="1_bu4bn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_khgfs"]
 size = Vector2(20.5, 1457)
@@ -31,7 +31,8 @@ shape = SubResource("RectangleShape2D_5eo8a")
 
 [node name="Grass_backgroud" type="Sprite2D" parent="."]
 texture_repeat = 2
-position = Vector2(640, 360)
+position = Vector2(647, 361.5)
+scale = Vector2(1.00078, 0.99375)
 texture = ExtResource("1_bu4bn")
 region_enabled = true
 region_rect = Rect2(0, 0, 2560, 1440)

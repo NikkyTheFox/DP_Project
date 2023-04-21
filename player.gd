@@ -6,21 +6,31 @@ var can_move # false if is during the picking up process
 var num_of_points # total num of collected mushrooms
 var text # score
 var walking_to_mushroom # true if is walking to mushroom
-var mushroom_array = [] # found mushrooms
-var picked_up_mushrooms = [] # already picked up mushrooms
+#var mushroom_array = [] # found mushrooms
+#var picked_up_mushrooms = [] # already picked up mushrooms
 var closest_mushroom # node to go to
+var thread
+var mutex
+var globals
+
+var temp_counter
 
 @onready var animation_tree = $AnimationTree
 @onready var state_machine = animation_tree.get("parameters/playback")
 
 
 func _ready():
+	globals = get_node("/root/Test")
 	can_move = true
 	num_of_points = 0
 	text = ""
 	animation_tree.active = true
 	walking_to_mushroom = false
 	closest_mushroom = null
+	mutex = Mutex.new()
+	thread = Thread.new()
+	thread.start(_thread_function)#a player will perform all it's task in new thread
+	temp_counter =0
 
 # Movement by keyboard
 func get_input():
@@ -34,22 +44,23 @@ func get_input():
 func _increase_points():
 	num_of_points += 1
 	text = "Score: %s" % num_of_points
+	
 func get_points():
 	return num_of_points
 
 # Function to find all mushrooms + calculate distance + find closest one
 func find_mushrooms():
+	mutex.lock()
 	for node in self.get_parent().get_children():
-		if 'Mushroom' in node.name && node not in picked_up_mushrooms:
+		if 'Mushroom' in node.name && node not in globals.picked_up_mushrooms && node not in globals.mushroom_array:
 			print(node.name, node.position)
-			mushroom_array.append(node)
-	
+			globals.mushroom_array.append(node)	
+	mutex.unlock()
 	var playerx = self.position.x
 	var playery = self.position.y
 	var min_distance = 10000
-	var closest_mushroom 
 	
-	for mushroom in mushroom_array:
+	for mushroom in globals.mushroom_array:
 		var x = (playerx - mushroom.position.x) * (playerx - mushroom.position.x) 
 		var y = (playery - mushroom.position.y) * (playery - mushroom.position.y) 
 		if sqrt(x + y) < min_distance:
@@ -62,7 +73,7 @@ func find_mushrooms():
 	return closest_mushroom # returns mushroom with the smallest distance to go to
 
 # Creates direction vector to create movement
-func go_to_mushroom(closest_mushroom):
+func go_to_mushroom():
 	var direction_vector = [0, 0]
 	# checking x direction
 	if closest_mushroom.position.x > self.position.x:
@@ -96,6 +107,14 @@ func go_to_mushroom(closest_mushroom):
 	
 
 func _physics_process(delta):
+	temp_counter += delta
+	if temp_counter > 1:
+		print("my name is " +str(self.name) + " and my thread id is " + str(thread.get_id()))
+		temp_counter = 0
+	# check whether global mushroom array is empty
+	if globals.mushroom_array.is_empty():
+		walking_to_mushroom = false
+	
 	# if not found a closest mushroom yet:
 	if walking_to_mushroom == false:
 		closest_mushroom = find_mushrooms()
@@ -103,7 +122,7 @@ func _physics_process(delta):
 		print("GOING TO : ", closest_mushroom.name)
 	# closest mushroom found, movement there:
 	if closest_mushroom != null:
-		var direction_vector = go_to_mushroom(closest_mushroom)
+		var direction_vector = go_to_mushroom()
 		velocity[0] = direction_vector[0] * SPEED		
 		velocity[1] = direction_vector[1] * SPEED
 		
@@ -127,37 +146,26 @@ func _physics_process(delta):
 			can_move = false
 			animation_tree.get("parameters/playback").travel("Idle")
 			await get_tree().create_timer(3.0).timeout # wait time 
-			if obj != null:
-				picked_up_mushrooms.append(obj)
+			if obj != null:				
+				mutex.lock() #lock mutex in order to prevent changes by other players
+				print("I ve locked the world, it is my precious")
+				globals.picked_up_mushrooms.append(obj)
 				obj.queue_free() # mushroom dissapear
 				print("Picking up a mushroom ", obj.name)
 				_increase_points()
 				can_move = true
 				walking_to_mushroom = false
-				mushroom_array.clear()
+				globals.mushroom_array.clear()
 				closest_mushroom = null
+				mutex.unlock()
+				print("I ve unlcoked the world, feel free to act on your own will")
 			else:
 				can_move = true
 		else:
 			print("I collided with ", obj.name)
-	
-	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+func _exit_tree():
+	thread.wait_to_finish()
+
+func _thread_function():
+	call_deferred("_physics_process", get_physics_process_delta_time())

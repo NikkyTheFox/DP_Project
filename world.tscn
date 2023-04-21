@@ -105,8 +105,19 @@ script = null
 position = Vector2(1196, -161)
 script = null
 
+[node name="Camera2D2" type="Camera2D" parent="."]
+position = Vector2(1232, 178)
+anchor_mode = 0
+zoom = Vector2(0.5, 0.5)
+limit_left = -634
+limit_top = -320
+limit_right = 1917
+limit_bottom = 1113
+editor_draw_limits = true
+
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(495, 273)
+visible = false
+position = Vector2(-106, 309)
 limit_left = -634
 limit_top = -320
 limit_right = 1917
@@ -114,13 +125,15 @@ limit_bottom = 1113
 editor_draw_limits = true
 
 [node name="Player" parent="." instance=ExtResource("5_brgy8")]
-position = Vector2(495, 273)
+position = Vector2(523, 50)
 script = ExtResource("3_5dayh")
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
+visible = false
 remote_path = NodePath("../../Camera2D")
 
 [node name="PointLight2D" type="PointLight2D" parent="Player"]
+visible = false
 position = Vector2(-10, 26)
 rotation = -0.00174533
 scale = Vector2(1.90918, 1.60293)
@@ -130,6 +143,61 @@ texture = ExtResource("9_frvlr")
 height = 1.0
 
 [node name="PointLight2D2" type="PointLight2D" parent="Player"]
+visible = false
+position = Vector2(184, 87)
+scale = Vector2(51.4375, -32.5938)
+blend_mode = 1
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_lxh5j")
+height = 1.0
+
+[node name="Player3" parent="." instance=ExtResource("5_brgy8")]
+position = Vector2(-106, 309)
+script = ExtResource("3_5dayh")
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player3"]
+visible = false
+remote_path = NodePath("../../Camera2D")
+
+[node name="PointLight2D" type="PointLight2D" parent="Player3"]
+visible = false
+position = Vector2(-10, 26)
+rotation = -0.00174533
+scale = Vector2(1.90918, 1.60293)
+color = Color(1, 0.996078, 0.988235, 1)
+shadow_enabled = true
+texture = ExtResource("9_frvlr")
+height = 1.0
+
+[node name="PointLight2D2" type="PointLight2D" parent="Player3"]
+visible = false
+position = Vector2(184, 87)
+scale = Vector2(51.4375, -32.5938)
+blend_mode = 1
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_lxh5j")
+height = 1.0
+
+[node name="Player2" parent="." instance=ExtResource("5_brgy8")]
+position = Vector2(1040, 526)
+script = ExtResource("3_5dayh")
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player2"]
+visible = false
+remote_path = NodePath("../../Camera2D")
+
+[node name="PointLight2D" type="PointLight2D" parent="Player2"]
+visible = false
+position = Vector2(-10, 26)
+rotation = -0.00174533
+scale = Vector2(1.90918, 1.60293)
+color = Color(1, 0.996078, 0.988235, 1)
+shadow_enabled = true
+texture = ExtResource("9_frvlr")
+height = 1.0
+
+[node name="PointLight2D2" type="PointLight2D" parent="Player2"]
+visible = false
 position = Vector2(184, 87)
 scale = Vector2(51.4375, -32.5938)
 blend_mode = 1
@@ -145,5 +213,4 @@ offset_left = 153.0
 offset_top = 59.0
 offset_right = 218.0
 offset_bottom = 85.0
-text = "Score : 0"
 script = ExtResource("9_207ro")
