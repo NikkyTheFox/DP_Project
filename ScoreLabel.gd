@@ -1,15 +1,17 @@
 extends Label
 
-var players = []
+
+var globals
 
 func _ready():
+	globals = get_node("/root/Test")
 	for node in self.get_parent().get_parent().get_children():
 		if 'Player' in node.name:
-			players.append(node)
+			globals.players.append(node)
 
 func _process(_delta):
 	text = ""
-	for node in players:
+	for node in globals.players:
 		text = text + "Player ID: " + str(node.name) + " Score: " + str(node.get_points()) + "\n"
 	set_text(text)
 	#var node = get_node("../../Player")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://xtyow8se78g3"]
 
-[ext_resource type="Texture2D" uid="uid://cj3gx6y2am7qa" path="res://grafika2/mushroom.png" id="1_1h5ry"]
+[ext_resource type="Texture2D" uid="uid://cj3gx6y2am7qa" path="res://grafika/mushroom.png" id="1_1h5ry"]
 
 [sub_resource type="GDScript" id="GDScript_0y2bk"]
 

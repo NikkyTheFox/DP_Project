@@ -35,13 +35,13 @@ position = Vector2(-156, -18)
 position = Vector2(-426, 561)
 
 [node name="Rock" parent="." instance=ExtResource("4_bmw38")]
-position = Vector2(304, 334)
+position = Vector2(289, -52)
 
 [node name="Tree_trunk_2" parent="." instance=ExtResource("3_tf7q3")]
 position = Vector2(-273, 795)
 
 [node name="Bush3" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(791, 192)
+position = Vector2(827, 204)
 
 [node name="Bush4" parent="." instance=ExtResource("2_x0t2w")]
 position = Vector2(488, 698)
@@ -50,10 +50,10 @@ position = Vector2(488, 698)
 position = Vector2(805, 498)
 
 [node name="Tree_trunk_3" parent="." instance=ExtResource("3_tf7q3")]
-position = Vector2(1158, 755)
+position = Vector2(1290, 704)
 
 [node name="Rock3" parent="." instance=ExtResource("4_bmw38")]
-position = Vector2(1283, 160)
+position = Vector2(1232, 179)
 
 [node name="Tree_trunk_4" parent="." instance=ExtResource("3_tf7q3")]
 position = Vector2(1518, -164)
@@ -70,11 +70,11 @@ position = Vector2(178, -95)
 script = null
 
 [node name="Mushroom3" parent="." instance=ExtResource("6_roj1t")]
-position = Vector2(714, 89)
+position = Vector2(1195, 28)
 script = null
 
 [node name="Mushroom4" parent="." instance=ExtResource("6_roj1t")]
-position = Vector2(969, 588)
+position = Vector2(962, 498)
 script = null
 
 [node name="Mushroom5" parent="." instance=ExtResource("6_roj1t")]
@@ -86,7 +86,7 @@ position = Vector2(795, 898)
 script = null
 
 [node name="Bush5" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(1619, 915)
+position = Vector2(1648, 895)
 
 [node name="Bush6" parent="." instance=ExtResource("2_x0t2w")]
 position = Vector2(719, 857)
@@ -117,7 +117,7 @@ editor_draw_limits = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 visible = false
-position = Vector2(523, 50)
+position = Vector2(493, 499)
 limit_left = -634
 limit_top = -320
 limit_right = 1917
@@ -125,7 +125,7 @@ limit_bottom = 1113
 editor_draw_limits = true
 
 [node name="Player" parent="." instance=ExtResource("5_brgy8")]
-position = Vector2(523, 50)
+position = Vector2(493, 499)
 script = ExtResource("3_5dayh")
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
@@ -143,60 +143,6 @@ texture = ExtResource("9_frvlr")
 height = 1.0
 
 [node name="PointLight2D2" type="PointLight2D" parent="Player"]
-visible = false
-position = Vector2(184, 87)
-scale = Vector2(51.4375, -32.5938)
-blend_mode = 1
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_lxh5j")
-height = 1.0
-
-[node name="Player3" parent="." instance=ExtResource("5_brgy8")]
-position = Vector2(-106, 309)
-script = ExtResource("3_5dayh")
-
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player3"]
-visible = false
-remote_path = NodePath("../../Camera2D")
-
-[node name="PointLight2D" type="PointLight2D" parent="Player3"]
-visible = false
-position = Vector2(-10, 26)
-rotation = -0.00174533
-scale = Vector2(1.90918, 1.60293)
-color = Color(1, 0.996078, 0.988235, 1)
-shadow_enabled = true
-texture = ExtResource("9_frvlr")
-height = 1.0
-
-[node name="PointLight2D2" type="PointLight2D" parent="Player3"]
-visible = false
-position = Vector2(184, 87)
-scale = Vector2(51.4375, -32.5938)
-blend_mode = 1
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_lxh5j")
-height = 1.0
-
-[node name="Player2" parent="." instance=ExtResource("5_brgy8")]
-position = Vector2(1040, 526)
-script = ExtResource("3_5dayh")
-
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player2"]
-visible = false
-remote_path = NodePath("../../Camera2D")
-
-[node name="PointLight2D" type="PointLight2D" parent="Player2"]
-visible = false
-position = Vector2(-10, 26)
-rotation = -0.00174533
-scale = Vector2(1.90918, 1.60293)
-color = Color(1, 0.996078, 0.988235, 1)
-shadow_enabled = true
-texture = ExtResource("9_frvlr")
-height = 1.0
-
-[node name="PointLight2D2" type="PointLight2D" parent="Player2"]
 visible = false
 position = Vector2(184, 87)
 scale = Vector2(51.4375, -32.5938)

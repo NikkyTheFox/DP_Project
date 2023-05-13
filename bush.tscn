@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://dgtd5put6f7v1" path="res://grafika/bush.png" id="1_7ctma"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qxcw4"]
-radius = 42.0
-height = 115.294
+radius = 4.70586
+height = 9.41172
 
 [node name="Bush" type="StaticBody2D"]
 

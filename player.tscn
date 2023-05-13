@@ -149,7 +149,7 @@ states/Idle/node = SubResource("AnimationNodeBlendSpace2D_crfhe")
 states/Idle/position = Vector2(467, 56)
 states/Start/position = Vector2(272, 92)
 states/Walk/node = SubResource("AnimationNodeBlendSpace2D_ytlao")
-states/Walk/position = Vector2(694, 56)
+states/Walk/position = Vector2(695, 56)
 transitions = ["Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_8rgp1"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_j15hu")]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_37cnm"]
@@ -175,7 +175,7 @@ tree_root = SubResource("AnimationNodeStateMachine_b0jib")
 anim_player = NodePath("../AnimationPlayer")
 parameters/playback = SubResource("AnimationNodeStateMachinePlayback_37cnm")
 parameters/Idle/blend_position = Vector2(0.983885, 0.0547264)
-parameters/Walk/blend_position = Vector2(0, 0)
+parameters/Walk/blend_position = Vector2(-0.00447625, -0.884746)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(2, 28)
