@@ -1,6 +1,8 @@
-[gd_scene load_steps=20 format=3 uid="uid://ccqsbsraigsmb"]
+[gd_scene load_steps=25 format=3 uid="uid://ccqsbsraigsmb"]
 
 [ext_resource type="Texture2D" uid="uid://b0jmuicgvdm8o" path="res://grafika/viking_green.png" id="1_alk1i"]
+[ext_resource type="Script" path="res://player.gd" id="1_u7owm"]
+[ext_resource type="Texture2D" uid="uid://rst0jbdrefdj" path="res://grafika/2d_lights_and_shadows_neutral_point_light.webp" id="3_x04fk"]
 
 [sub_resource type="Animation" id="Animation_irl8y"]
 length = 0.001
@@ -157,7 +159,27 @@ transitions = ["Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mxov3"]
 height = 56.0
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_iioeg"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath("AnimationPlayer:current_animation")
+properties/2/spawn = true
+properties/2/sync = true
+
+[sub_resource type="Gradient" id="Gradient_urycw"]
+offsets = PackedFloat32Array(0, 0.00515464, 0.958763, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.876289, 0.876289, 0.876289, 1, 0.958763, 0.958763, 0.958763, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qi45f"]
+gradient = SubResource("Gradient_urycw")
+
 [node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_u7owm")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_alk1i")
@@ -178,6 +200,29 @@ parameters/Idle/blend_position = Vector2(0.983885, 0.0547264)
 parameters/Walk/blend_position = Vector2(-0.00447625, -0.884746)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(2, 28)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_mxov3")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_iioeg")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+visible = false
+position = Vector2(-10, 26)
+rotation = -0.00174533
+scale = Vector2(1.90918, 1.60293)
+color = Color(1, 0.996078, 0.988235, 1)
+shadow_enabled = true
+texture = ExtResource("3_x04fk")
+height = 1.0
+
+[node name="PointLight2D2" type="PointLight2D" parent="."]
+visible = false
+position = Vector2(184, 87)
+scale = Vector2(51.4375, -32.5938)
+blend_mode = 1
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_qi45f")
+height = 1.0

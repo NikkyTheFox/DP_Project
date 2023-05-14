@@ -1,22 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://bymmo182ln2u6"]
+[gd_scene load_steps=5 format=3 uid="uid://bymmo182ln2u6"]
 
 [ext_resource type="PackedScene" uid="uid://c1wxcyxgetp3p" path="res://background_and_boundaries.tscn" id="1_mrqhq"]
 [ext_resource type="Script" path="res://world.gd" id="1_nv4ob"]
-[ext_resource type="PackedScene" uid="uid://ds82mrs23btxh" path="res://bush.tscn" id="2_x0t2w"]
-[ext_resource type="Script" path="res://player.gd" id="3_5dayh"]
-[ext_resource type="PackedScene" uid="uid://ddvahstikf6uu" path="res://tree_trunk_1.tscn" id="3_tf7q3"]
-[ext_resource type="PackedScene" uid="uid://cm8nb2l2x6k2d" path="res://rock.tscn" id="4_bmw38"]
-[ext_resource type="PackedScene" uid="uid://ccqsbsraigsmb" path="res://player.tscn" id="5_brgy8"]
 [ext_resource type="PackedScene" uid="uid://xtyow8se78g3" path="res://mushroom.tscn" id="6_roj1t"]
 [ext_resource type="Script" path="res://ScoreLabel.gd" id="9_207ro"]
-[ext_resource type="Texture2D" uid="uid://rst0jbdrefdj" path="res://grafika/2d_lights_and_shadows_neutral_point_light.webp" id="9_frvlr"]
-
-[sub_resource type="Gradient" id="Gradient_e6bii"]
-offsets = PackedFloat32Array(0, 0.00515464, 0.958763, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.876289, 0.876289, 0.876289, 1, 0.958763, 0.958763, 0.958763, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_lxh5j"]
-gradient = SubResource("Gradient_e6bii")
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_nv4ob")
@@ -24,86 +11,29 @@ script = ExtResource("1_nv4ob")
 [node name="Background_and_boundaries" parent="." instance=ExtResource("1_mrqhq")]
 position = Vector2(0, 34)
 
-[node name="Bush" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(-486, -176)
-
-[node name="Tree_trunk_1" parent="." instance=ExtResource("3_tf7q3")]
-light_mask = 3
-position = Vector2(-156, -18)
-
-[node name="Bush2" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(-426, 561)
-
-[node name="Rock" parent="." instance=ExtResource("4_bmw38")]
-position = Vector2(289, -52)
-
-[node name="Tree_trunk_2" parent="." instance=ExtResource("3_tf7q3")]
-position = Vector2(-273, 795)
-
-[node name="Bush3" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(827, 204)
-
-[node name="Bush4" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(488, 698)
-
-[node name="Rock2" parent="." instance=ExtResource("4_bmw38")]
-position = Vector2(805, 498)
-
-[node name="Tree_trunk_3" parent="." instance=ExtResource("3_tf7q3")]
-position = Vector2(1290, 704)
-
-[node name="Rock3" parent="." instance=ExtResource("4_bmw38")]
-position = Vector2(1232, 179)
-
-[node name="Tree_trunk_4" parent="." instance=ExtResource("3_tf7q3")]
-position = Vector2(1518, -164)
-
-[node name="Rock4" parent="." instance=ExtResource("4_bmw38")]
-position = Vector2(855, -229)
-
 [node name="Mushroom" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(-223, 298)
-script = null
 
 [node name="Mushroom2" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(178, -95)
-script = null
 
 [node name="Mushroom3" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(1195, 28)
-script = null
 
 [node name="Mushroom4" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(962, 498)
-script = null
 
 [node name="Mushroom5" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(1624, 615)
-script = null
 
 [node name="Mushroom6" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(795, 898)
-script = null
-
-[node name="Bush5" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(1648, 895)
-
-[node name="Bush6" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(719, 857)
-
-[node name="Rock5" parent="." instance=ExtResource("4_bmw38")]
-position = Vector2(195, 982)
-
-[node name="Bush7" parent="." instance=ExtResource("2_x0t2w")]
-position = Vector2(1498, 427)
 
 [node name="Mushroom7" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(-422, 948)
-script = null
 
 [node name="Mushroom8" parent="." instance=ExtResource("6_roj1t")]
 position = Vector2(1196, -161)
-script = null
 
 [node name="Camera2D2" type="Camera2D" parent="."]
 position = Vector2(1232, 178)
@@ -124,33 +54,6 @@ limit_right = 1917
 limit_bottom = 1113
 editor_draw_limits = true
 
-[node name="Player" parent="." instance=ExtResource("5_brgy8")]
-position = Vector2(493, 499)
-script = ExtResource("3_5dayh")
-
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
-visible = false
-remote_path = NodePath("../../Camera2D")
-
-[node name="PointLight2D" type="PointLight2D" parent="Player"]
-visible = false
-position = Vector2(-10, 26)
-rotation = -0.00174533
-scale = Vector2(1.90918, 1.60293)
-color = Color(1, 0.996078, 0.988235, 1)
-shadow_enabled = true
-texture = ExtResource("9_frvlr")
-height = 1.0
-
-[node name="PointLight2D2" type="PointLight2D" parent="Player"]
-visible = false
-position = Vector2(184, 87)
-scale = Vector2(51.4375, -32.5938)
-blend_mode = 1
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_lxh5j")
-height = 1.0
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ScoreLabel" type="Label" parent="CanvasLayer"]
@@ -160,3 +63,44 @@ offset_top = 59.0
 offset_right = 218.0
 offset_bottom = 85.0
 script = ExtResource("9_207ro")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://player.tscn", "res://mushroom.tscn")
+spawn_path = NodePath("..")
+
+[node name="JoinButton" type="CanvasLayer" parent="."]
+
+[node name="Menu" type="PanelContainer" parent="JoinButton"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -142.0
+offset_bottom = 140.0
+grow_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="JoinButton/Menu"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="JoinButton/Menu/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="JoinButton/Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="JoinButton" type="Button" parent="JoinButton/Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Add Player
+"
+
+[node name="HostButton" type="Button" parent="JoinButton/Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Host"
+
+[connection signal="pressed" from="JoinButton/Menu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="JoinButton/Menu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]

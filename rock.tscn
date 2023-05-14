@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://kgy4v0dk5187" path="res://grafika/rock.png" id="1_dthb5"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m46px"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1g4ak"]
 radius = 11.0
 height = 24.0
 
@@ -14,4 +14,4 @@ texture = ExtResource("1_dthb5")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(17, -6)
 rotation = -1.5708
-shape = SubResource("CapsuleShape2D_m46px")
+shape = SubResource("CapsuleShape2D_1g4ak")

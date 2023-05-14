@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dgtd5put6f7v1" path="res://grafika/bush.png" id="1_7ctma"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qxcw4"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8yc2p"]
 radius = 4.70586
 height = 9.41172
 
@@ -16,4 +16,4 @@ texture = ExtResource("1_7ctma")
 position = Vector2(-1, -2)
 rotation = -1.5708
 scale = Vector2(1, 0.85)
-shape = SubResource("CapsuleShape2D_qxcw4")
+shape = SubResource("CapsuleShape2D_8yc2p")
