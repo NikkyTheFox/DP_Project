@@ -52,8 +52,8 @@ func _ready():
 	#if check == 0:
 	#	rpc("test")
 	#	check = 1
-	self.position.x = 0 #randi_range(-600, 1900)
-	self.position.y = 0 #randi_range(-300, 1000)
+	self.position.x = randi_range(-600, 1900)
+	self.position.y = randi_range(-300, 1000)
 	globals = get_node("/root/Test")
 	can_move = true
 	num_of_points = 0
@@ -256,7 +256,7 @@ func _physics_process(delta):
 	velocity[0] = direction_vector[0] * SPEED
 	velocity[1] = direction_vector[1] * SPEED
 	velocity.normalized()
-	rpc("remote_set_position", global_position)
+	
 	#print("MY POSITION : ", self.position, " VELOCITY : ", velocity)
 
 	# if not found a closest mushroom yet:
@@ -285,7 +285,6 @@ func _physics_process(delta):
 		animation_tree.get("parameters/playback").travel("Walk")
 		animation_tree.set("parameters/Idle/blend_position", velocity)
 		animation_tree.set("parameters/Walk/blend_position", velocity)
-		
 	# Collision
 	var collision = move_and_collide(velocity * delta)
 	if collision:
