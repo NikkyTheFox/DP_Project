@@ -285,6 +285,7 @@ func _physics_process(delta):
 		animation_tree.get("parameters/playback").travel("Walk")
 		animation_tree.set("parameters/Idle/blend_position", velocity)
 		animation_tree.set("parameters/Walk/blend_position", velocity)
+	rpc("remote_set_position", global_position)
 	# Collision
 	var collision = move_and_collide(velocity * delta)
 	if collision:
