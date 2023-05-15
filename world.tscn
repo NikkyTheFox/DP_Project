@@ -39,10 +39,6 @@ offset_right = 218.0
 offset_bottom = 85.0
 script = ExtResource("9_207ro")
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://player.tscn", "res://mushroom.tscn")
-spawn_path = NodePath("..")
-
 [node name="JoinButton" type="CanvasLayer" parent="."]
 
 [node name="Menu" type="PanelContainer" parent="JoinButton"]

@@ -40,9 +40,9 @@ var peer # needed to be a client
 		#		print("Failed to connect")
 		#		return
 
-func _enter_tree():
-	var to_auth = self.name.get_slice("_", 1)
-	self.set_multiplayer_authority(str(to_auth).to_int())
+#func _enter_tree():
+#	var to_auth = self.name.get_slice("_", 1)
+#	self.set_multiplayer_authority(str(to_auth).to_int())
 
 func _ready():
 	#if multiplayer.get_unique_id() == 1:
@@ -86,6 +86,7 @@ func get_input():
 func _increase_points():
 	num_of_points += 1
 	text = "Score: %s" % num_of_points
+	rpc("remote_sync_points", num_of_points)
 	
 func get_points():
 	return num_of_points
@@ -240,7 +241,8 @@ func predict_collisions_on_way(direction_vector, position):
 
 
 func _physics_process(delta):
-	#if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority(): return
+	#print("cześć to ja steruje graczem i jestem peer numer: " + str(multiplayer.get_unique_id()))
 	temp_counter += delta
 	if temp_counter > 1:
 		#print("My name is " +str(self.name) + " and my thread id is " + str(self.thread.get_id()))
@@ -254,6 +256,7 @@ func _physics_process(delta):
 	velocity[0] = direction_vector[0] * SPEED
 	velocity[1] = direction_vector[1] * SPEED
 	velocity.normalized()
+	rpc("remote_set_position", global_position)
 	#print("MY POSITION : ", self.position, " VELOCITY : ", velocity)
 
 	# if not found a closest mushroom yet:
@@ -325,9 +328,8 @@ func pickup_mushroom(obj):
 		#shroom.call_deferred("prepare_delete")
 		#shroom.rpc("prepare_delete")
 		#var server = get_tree().get_network_peer()
-		rpc_id(1,"test2",shroom)
+		rpc("delete_shroom", shroom.name)
 		#rpc("test2",shroom)
-		#rpc("delete_shroom", shroom)
 		#shroom.queue_free() # mushroom dissapear
 		print("Picking up a mushroom ", shroom.name)
 		call_deferred("_increase_points")
@@ -346,13 +348,28 @@ func _exit_tree():
 func _thread_function():
 	call_deferred("_physics_process", get_physics_process_delta_time())
 
-@rpc("call_local")
-func test2(obj):
-	obj.call_deferred("prepare_delete")
+@rpc("unreliable")
+func remote_set_position(authority_position):
+	global_position = authority_position
+	
+@rpc("unreliable")
+func remote_sync_points(points):
+	self.num_of_points = points
 
-@rpc("call_local")
-func test():
-	if multiplayer.get_remote_sender_id() == multiplayer.get_unique_id():
-		print("called locally on " + str(multiplayer.get_unique_id()))
-	else:
-		print("called by peer " + str(multiplayer.get_remote_sender_id()) + "on peer " + str(multiplayer.get_unique_id()))
+@rpc("any_peer", "call_local", "reliable", 1)
+func delete_shroom(name):
+	var shroom = get_parent().get_node_or_null(NodePath(name))
+	if shroom == null: return
+	shroom.prepare_delete()
+	#var shroom
+	#if  is_instance_of(obj, EncodedObjectAsID):
+	#	var test = obj.get_object_id()
+	#	shroom = instance_from_id(test)
+	#	#print("XDD called on " + str(multiplayer.get_unique_id()))
+	#	print("XDD called on " + str(multiplayer.get_unique_id()) + " shroom position: " + str(shroom.position.x) + " " + str(shroom.position.y))
+	#	#return
+	#else:
+	#	shroom = obj
+	#if shroom == null: return
+	#print("called on " + str(multiplayer.get_unique_id()) + " shroom position: " + str(shroom.position.x) + " " + str(shroom.position.y))
+	#shroom.prepare_delete()

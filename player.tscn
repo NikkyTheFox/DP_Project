@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://ccqsbsraigsmb"]
+[gd_scene load_steps=24 format=3 uid="uid://ccqsbsraigsmb"]
 
 [ext_resource type="Texture2D" uid="uid://b0jmuicgvdm8o" path="res://grafika/viking_green.png" id="1_alk1i"]
 [ext_resource type="Script" path="res://player.gd" id="1_u7owm"]
@@ -159,20 +159,6 @@ transitions = ["Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mxov3"]
 height = 56.0
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_iioeg"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/sync = true
-properties/1/path = NodePath(".:rotation")
-properties/1/spawn = true
-properties/1/sync = true
-properties/2/path = NodePath("AnimationPlayer:current_animation")
-properties/2/spawn = true
-properties/2/sync = true
-properties/3/path = NodePath(".:up_direction")
-properties/3/spawn = true
-properties/3/sync = true
-
 [sub_resource type="Gradient" id="Gradient_urycw"]
 offsets = PackedFloat32Array(0, 0.00515464, 0.958763, 1)
 colors = PackedColorArray(0, 0, 0, 1, 0.876289, 0.876289, 0.876289, 1, 0.958763, 0.958763, 0.958763, 1, 1, 1, 1, 1)
@@ -207,9 +193,6 @@ visible = false
 position = Vector2(2, 28)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_mxov3")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_iioeg")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 visible = false
