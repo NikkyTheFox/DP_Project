@@ -169,6 +169,9 @@ properties/1/sync = true
 properties/2/path = NodePath("AnimationPlayer:current_animation")
 properties/2/spawn = true
 properties/2/sync = true
+properties/3/path = NodePath(".:up_direction")
+properties/3/spawn = true
+properties/3/sync = true
 
 [sub_resource type="Gradient" id="Gradient_urycw"]
 offsets = PackedFloat32Array(0, 0.00515464, 0.958763, 1)

@@ -11,6 +11,9 @@ var mushroom_counter = 10
 var globals
 const STARTING_MUSHROOM_AMOUNT = 20
 
+var shroom_x = 0
+var shroom_y = 0
+
 # needed to host as a server
 const PORT = 9999
 var enet_peer = ENetMultiplayerPeer.new()
@@ -35,7 +38,7 @@ func _process(_delta):
 		temp_counter = 0
 	# Creating new mushrooms during game
 	if mushroom_create_flag == true:
-		if multiplayer.is_server():
+		if multiplayer.get_unique_id() == 1:
 			print("-------------------")
 			print(multiplayer.get_unique_id())
 			print("-------------------")
@@ -54,20 +57,23 @@ func _process(_delta):
 			mushroom_create_flag = true
 
 func initiate_mushrooms(x):
+	if multiplayer.get_unique_id() != 1:
+		return
 	for i in x:
 		mutex.lock()
 		var m = mushroom_scene.instantiate()
-		m.name = "Mushroomchuj_" + str(mushroom_counter)
+		m.name = "Mushroom_" + str(mushroom_counter)
 		mushroom_counter = mushroom_counter + 1
-		print(multiplayer.get_unique_id())
+		#print("XD " + str(multiplayer.get_unique_id()))
 		globals.new_shroom_pos(multiplayer.get_unique_id())
-		m.position.x = globals.new_shroom_pos_x
-		m.position.y = globals.new_shroom_pos_y
+		var pos_x = globals.new_shroom_pos_x
+		var pos_y = globals.new_shroom_pos_y
 		#m.position.x = randi_range(-600, 1900)
 		#m.position.y = randi_range(-300, 1000)
-		print("spawned " + str(m.name) + "at position x: " +str(m.position.x) + " y: " + str(m.position.y) + " on node:" + str(multiplayer.get_unique_id()))
+		print("spawned " + str(m.name) + "at position x: " +str(pos_x) + " y: " + str(pos_y) + " on node:" + str(multiplayer.get_unique_id()))
 		add_child(m)
 		#call_deferred("add_child", m)
+		m.set_pos(pos_x,pos_y)
 		mutex.unlock()
 		
 func _exit_tree():
@@ -77,12 +83,10 @@ func _thread_function():
 	call_deferred("_process", get_process_delta_time())
 	
 func add_player(peer_id):
-	print("-------------------")
-	print(peer_id)
-	print("-------------------")
 	var player = player_scene.instantiate()
 	player.name = "Player_" + str(peer_id)
 	call_deferred("add_child", player, true)
+	call_deferred("initiate_mushrooms", 10)
 	set_process(true)
 	#add_child(player)
 
@@ -112,3 +116,11 @@ func _on_host_button_pressed():
 	multiplayer.peer_connected.connect(add_player)
 	
 	#add_player(multiplayer.get_unique_id()) # a player on a server
+
+@rpc("any_peer")
+func delete_shroom(obj):
+	obj.prepare_delete()
+	
+@rpc("call_local")
+func test2(obj):
+	obj.call_deferred("prepare_delete")

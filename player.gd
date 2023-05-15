@@ -20,6 +20,8 @@ var initial_position_before_avoidance
 
 var hittables = []
 
+var check = 0
+
 var peer # needed to be a client
 
 @onready var animation_tree = $AnimationTree
@@ -38,12 +40,18 @@ var peer # needed to be a client
 		#		print("Failed to connect")
 		#		return
 
-#func _enter_tree():
-#	self.set_multiplayer_authority(str(self.name).to_int())
+func _enter_tree():
+	var to_auth = self.name.get_slice("_", 1)
+	self.set_multiplayer_authority(str(to_auth).to_int())
 
 func _ready():
-	#if not is_multiplayer_authority(): 
+	#if multiplayer.get_unique_id() == 1:
+	#	set_physics_process(false)
+	#	print("im a server")
 	#	return
+	#if check == 0:
+	#	rpc("test")
+	#	check = 1
 	self.position.x = 0 #randi_range(-600, 1900)
 	self.position.y = 0 #randi_range(-300, 1000)
 	globals = get_node("/root/Test")
@@ -61,7 +69,10 @@ func _ready():
 	direction_vector = Vector2.ZERO
 	initial_position_before_avoidance = Vector2.ZERO
 	globals.players.append(self)
-	#thread.start(_thread_function) #a player will perform all it's task in new thread
+	if not is_multiplayer_authority():
+		set_physics_process(false)
+		return
+	thread.start(_thread_function) #a player will perform all it's task in new thread
 
 # Movement by keyboard
 func get_input():
@@ -92,12 +103,12 @@ func find_mushrooms():
 	var min_distance = 10000
 	
 	for mushroom in globals.mushroom_array:
-		if mushroom not in globals.picked_up_mushrooms:
-			var x = (playerx - mushroom.position.x) * (playerx - mushroom.position.x) 
-			var y = (playery - mushroom.position.y) * (playery - mushroom.position.y) 
-			if sqrt(x + y) < min_distance:
-				min_distance = sqrt(x+y)
-				closest_mushroom = mushroom
+		#if mushroom not in globals.picked_up_mushrooms:
+		var x = (playerx - mushroom.position.x) * (playerx - mushroom.position.x) 
+		var y = (playery - mushroom.position.y) * (playery - mushroom.position.y) 
+		if sqrt(x + y) < min_distance:
+			min_distance = sqrt(x+y)
+			closest_mushroom = mushroom
 	#print("CLOSEST MUSHROOM IS: ", closest_mushroom.name)
 	#print("DISTANCE : ", min_distance)
 	walking_to_mushroom = true
@@ -278,8 +289,9 @@ func _physics_process(delta):
 		var obj = collision.get_collider()
 		# Picking up mushrooms
 		if 'Mushroom' in obj.name:
-			pickup_mushroom(obj)
-			#rpc('pickup_mushroom', obj)
+			#pickup_mushroom(obj)
+			call_deferred("pickup_mushroom",obj)
+			#rpc("pickup_mushroom", obj)
 		elif 'Player' in obj.name:
 			fight_with_player(obj)
 		else:
@@ -297,6 +309,7 @@ func pickup_mushroom(obj):
 		#return
 	else:
 		shroom = obj
+	if shroom == null: return
 	can_move = false
 	self.blocked = false
 	animation_tree.get("parameters/playback").travel("Idle")
@@ -309,9 +322,15 @@ func pickup_mushroom(obj):
 		if shroom.get_parent() == null:
 			return
 		#shroom.get_parent().remove_child(shroom)
-		shroom.queue_free() # mushroom dissapear
+		#shroom.call_deferred("prepare_delete")
+		#shroom.rpc("prepare_delete")
+		#var server = get_tree().get_network_peer()
+		rpc_id(1,"test2",shroom)
+		#rpc("test2",shroom)
+		#rpc("delete_shroom", shroom)
+		#shroom.queue_free() # mushroom dissapear
 		print("Picking up a mushroom ", shroom.name)
-		_increase_points()
+		call_deferred("_increase_points")
 		can_move = true
 		walking_to_mushroom = false
 		globals.mushroom_array.clear()
@@ -326,3 +345,14 @@ func _exit_tree():
 
 func _thread_function():
 	call_deferred("_physics_process", get_physics_process_delta_time())
+
+@rpc("call_local")
+func test2(obj):
+	obj.call_deferred("prepare_delete")
+
+@rpc("call_local")
+func test():
+	if multiplayer.get_remote_sender_id() == multiplayer.get_unique_id():
+		print("called locally on " + str(multiplayer.get_unique_id()))
+	else:
+		print("called by peer " + str(multiplayer.get_remote_sender_id()) + "on peer " + str(multiplayer.get_unique_id()))
