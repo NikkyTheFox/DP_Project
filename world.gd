@@ -179,6 +179,6 @@ func _on_start_button_pressed():
 func sync_globals(mush_arr, picked_mush_array, obstacles_array, freed_players_array, players_array):
 	globals.mushroom_array = mush_arr
 	globals.picked_up_mushrooms = picked_mush_array
-	globals.obstacles_in_game = obstacles_array
-	globals.freed_players = freed_players_array
-	globals.players = players_array
+	#globals.obstacles_in_game = obstacles_array
+	#globals.freed_players = freed_players_array
+	#globals.players = players_array
