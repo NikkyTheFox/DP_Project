@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://d0xrhun6ori7t" path="res://grafika/tree_trunk_1.png" id="1_0tquq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qr8n0"]
-radius = 9.0
-height = 18.0
+radius = 38.0
+height = 122.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_qjc3u"]
 properties/0/path = NodePath(".:position")

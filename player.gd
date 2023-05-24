@@ -8,53 +8,28 @@ var text # score
 var walking_to_mushroom # true if is walking to mushroom
 var blocked
 var collision_cnt
-#var mushroom_array = [] # found mushrooms
-#var picked_up_mushrooms = [] # already picked up mushrooms
 var closest_mushroom # node to go to
 var thread
 var mutex
-var globals
 var direction_vector
 var temp_counter
 var initial_position_before_avoidance
 
-var hittables = []
-
-var check = 0
 
 var peer # needed to be a client
+
+# some new shit
+var globals 
+var flaga
+var flaga_cnt
 
 @onready var animation_tree = $AnimationTree
 @onready var state_machine = animation_tree.get("parameters/playback")
 
-#func _init():
-	#peer = ENetMultiplayerPeer.new()
-	#if peer.create_client("192.168.1.1", 9080) != OK:
-#		print("Failed to create client")
-#	else:
-#		print("Created client!")
-#		print("Trying to connect to the server now")
-		#while peer.get_connection_status() != 2:
-		#	print(peer.get_connection_status())
-		#	if peer.get_connection_status() == 0:
-		#		print("Failed to connect")
-		#		return
-
-#func _enter_tree():
-#	var to_auth = self.name.get_slice("_", 1)
-#	self.set_multiplayer_authority(str(to_auth).to_int())
-
 func _ready():
-	#if multiplayer.get_unique_id() == 1:
-	#	set_physics_process(false)
-	#	print("im a server")
-	#	return
-	#if check == 0:
-	#	rpc("test")
-	#	check = 1
 	self.position.x = randi_range(-600, 1900)
 	self.position.y = randi_range(-300, 1000)
-	globals = get_node("/root/Test")
+	globals = get_node("/root/World")
 	can_move = true
 	num_of_points = 0
 	text = ""
@@ -62,13 +37,14 @@ func _ready():
 	walking_to_mushroom = false
 	closest_mushroom = null
 	blocked = false
+	flaga = false
+	flaga_cnt = 0
 	mutex = Mutex.new()
 	thread = Thread.new()
 	temp_counter = 0
 	collision_cnt = 1
 	direction_vector = Vector2.ZERO
-	initial_position_before_avoidance = Vector2.ZERO
-	globals.players.append(self)
+	initial_position_before_avoidance = Vector2.ZERO	
 	if not is_multiplayer_authority():
 		set_physics_process(false)
 		return
@@ -94,25 +70,24 @@ func get_points():
 # Function to find all mushrooms + calculate distance + find closest one
 func find_mushrooms():
 	mutex.lock()
+	globals.mushroom_array.clear()
 	for node in self.get_parent().get_children():
-		if 'Mushroom' in node.name && node not in globals.picked_up_mushrooms && node not in globals.mushroom_array:
-			#print(node.name, node.position)
-			globals.mushroom_array.append(node)	
+		if 'Mushroom' in node.name && node not in globals.mushroom_array:
+			globals.mushroom_array.append(node)
+			
 	mutex.unlock()
 	var playerx = self.position.x
 	var playery = self.position.y
 	var min_distance = 10000
 	
 	for mushroom in globals.mushroom_array:
-		#if mushroom not in globals.picked_up_mushrooms:
 		var x = (playerx - mushroom.position.x) * (playerx - mushroom.position.x) 
 		var y = (playery - mushroom.position.y) * (playery - mushroom.position.y) 
 		if sqrt(x + y) < min_distance:
-			min_distance = sqrt(x+y)
+			min_distance = sqrt(x + y)
 			closest_mushroom = mushroom
-	#print("CLOSEST MUSHROOM IS: ", closest_mushroom.name)
-	#print("DISTANCE : ", min_distance)
 	walking_to_mushroom = true
+	
 	return closest_mushroom # returns mushroom with the smallest distance to go to
 
 # Creates direction vector to create movement
@@ -152,32 +127,28 @@ func go_to_mushroom(rand_value):
 	direction_vector[1] = direction_vector[1] * rand_value
 	return direction_vector # direction vector
 	
+	
 func fight_with_player(player):
-	if self.num_of_points >= player.num_of_points:
-		#print("Player ", self.name, " killed ", player.name)
+	if self.num_of_points > player.num_of_points:
+		print("Player ", self.name, " stoled from ", player.name)
 		self.num_of_points += player.num_of_points
-		globals.players.erase(player)
-		player.get_parent().remove_child(player)
-		player.queue_free()
+		player.num_of_points = 0
+		rpc("remote_sync_points", self.num_of_points)
 	else:
-		player.num_of_points += self.num_of_points
-		#print("Player ", player.name, " killed ", self.name)
-		globals.players.erase(self)
-		self.get_parent().remove_child(self)
-		self.queue_free()
-		
+		self.num_of_points = 0
+		rpc("remote_sync_points", self.num_of_points)
 		
 # Find all obstacles in the game
-
-
 func check_collision_with_obstacles(direction_vector, position):
-	var bufer = 0
+	var bufer = 30
 	var angle = 0.4
-	var size = 50
+	var size = 	50
 	var temp0 = direction_vector[0]
 	var temp1 = direction_vector[1]
-	#print("checking pos: ", position, " while on ", self.position)
 	for obstacle in globals.obstacles_in_game:
+		if is_instance_of(obstacle, EncodedObjectAsID):
+			var test = obstacle.get_object_id()
+			obstacle = instance_from_id(test)
 		var right_bound = obstacle.position.x + size + bufer
 		var left_bound = obstacle.position.x - size - bufer
 		var top_bound = obstacle.position.y - size - bufer
@@ -198,10 +169,10 @@ func check_collision_with_obstacles(direction_vector, position):
 				else: # you are heading straight on obstacle
 					direction_vector[1] = 1
 					direction_vector[0] = 0
-				#print("Running from [", temp0, " ", temp1, "] to ", direction_vector)
+				print("Running from [", temp0, " ", temp1, "] to ", direction_vector)
 				self.blocked = true
 				return direction_vector
-	
+		
 	return direction_vector
 
 func unblock_movement_to_mushroom():
@@ -221,10 +192,9 @@ func calculate_collision_on_way(direction_vector, position):
 	return direction_vector
 
 func predict_collisions_on_way(direction_vector, position):
-	var vector
-	#print("-------------------------------")
-	for d in range (1, 50):
-		vector = calculate_collision_on_way(direction_vector, position)
+	var vector = direction_vector
+	for d in range (1, 66):
+		vector = calculate_collision_on_way(vector, position)
 		if vector[0] == direction_vector[0] && vector[1] == direction_vector[1]: # there was no collision:>
 			pass
 		else:
@@ -239,44 +209,36 @@ func predict_collisions_on_way(direction_vector, position):
 			position.y -= 1		
 	return vector
 
-
 func _physics_process(delta):
 	if not is_multiplayer_authority(): return
-	#print("cześć to ja steruje graczem i jestem peer numer: " + str(multiplayer.get_unique_id()))
 	temp_counter += delta
 	if temp_counter > 1:
-		#print("My name is " +str(self.name) + " and my thread id is " + str(self.thread.get_id()))
 		temp_counter = 0
-	# check whether global mushroom array is empty
+		
 	if globals.mushroom_array.is_empty():
 		walking_to_mushroom = false
+	flaga_cnt += 1
 	
+	if flaga_cnt > 40:
+		flaga = false
+		
 	# avoid obstacles
 	direction_vector = predict_collisions_on_way(direction_vector, self.position)
 	velocity[0] = direction_vector[0] * SPEED
 	velocity[1] = direction_vector[1] * SPEED
 	velocity.normalized()
 	
-	#print("MY POSITION : ", self.position, " VELOCITY : ", velocity)
-
 	# if not found a closest mushroom yet:
 	if walking_to_mushroom == false:
 		closest_mushroom = find_mushrooms()
-		#print("MY POSITION : ", self.position)
-		if closest_mushroom != null:
-			print("GOING TO : ", closest_mushroom.name)
 
 	# closest mushroom found, movement there:
-	if closest_mushroom != null && self.blocked == false:
-		var rand_val = randf_range(0.1, 0.9)
+	if closest_mushroom != null && self.blocked == false && self.flaga == false:
 		direction_vector = go_to_mushroom(1)
 		#print("GOING IN DIR : ", direction_vector)
 		velocity[0] = direction_vector[0] * SPEED
 		velocity[1] = direction_vector[1] * SPEED
-		velocity.normalized()
-		
-	# Movement by keyboard
-	# get_input()	
+		velocity.normalized()	
 	
 	# Changing animations
 	if velocity == Vector2.ZERO:
@@ -292,14 +254,16 @@ func _physics_process(delta):
 		var obj = collision.get_collider()
 		# Picking up mushrooms
 		if 'Mushroom' in obj.name:
-			#pickup_mushroom(obj)
 			call_deferred("pickup_mushroom",obj)
-			#rpc("pickup_mushroom", obj)
 		elif 'Player' in obj.name:
 			fight_with_player(obj)
 		else:
-			#print("I collided with ", obj.name, " at ", self.position)
-			find_mushrooms()
+			print("I collided with ", obj.name, " at ", self.position)
+			direction_vector[0] = -direction_vector[0]
+			direction_vector[1] = -direction_vector[1]
+			flaga = true
+			flaga_cnt = 0
+			
 	else: # no collsion
 		collision_cnt = 1
 		
@@ -321,20 +285,14 @@ func pickup_mushroom(obj):
 	if shroom != null:				
 		mutex.lock() #lock mutex in order to prevent changes by other players
 		#print("I ve locked the world, it is my precious")
-		globals.picked_up_mushrooms.append(shroom)
 		if shroom.get_parent() == null:
 			return
-		#shroom.get_parent().remove_child(shroom)
-		#shroom.call_deferred("prepare_delete")
-		#shroom.rpc("prepare_delete")
-		#var server = get_tree().get_network_peer()
 		rpc("delete_shroom", shroom.name)
-		#rpc("test2",shroom)
-		#shroom.queue_free() # mushroom dissapear
 		print("Picking up a mushroom ", shroom.name)
 		call_deferred("_increase_points")
 		can_move = true
 		walking_to_mushroom = false
+		rpc("clear_mushroom_array")
 		globals.mushroom_array.clear()
 		closest_mushroom = null
 		mutex.unlock()
@@ -347,6 +305,10 @@ func _exit_tree():
 
 func _thread_function():
 	call_deferred("_physics_process", get_physics_process_delta_time())
+
+@rpc
+func clear_mushroom_array():
+	globals.mushroom_array.clear()
 
 @rpc("unreliable")
 func remote_set_position(authority_position):
@@ -361,15 +323,3 @@ func delete_shroom(name):
 	var shroom = get_parent().get_node_or_null(NodePath(name))
 	if shroom == null: return
 	shroom.prepare_delete()
-	#var shroom
-	#if  is_instance_of(obj, EncodedObjectAsID):
-	#	var test = obj.get_object_id()
-	#	shroom = instance_from_id(test)
-	#	#print("XDD called on " + str(multiplayer.get_unique_id()))
-	#	print("XDD called on " + str(multiplayer.get_unique_id()) + " shroom position: " + str(shroom.position.x) + " " + str(shroom.position.y))
-	#	#return
-	#else:
-	#	shroom = obj
-	#if shroom == null: return
-	#print("called on " + str(multiplayer.get_unique_id()) + " shroom position: " + str(shroom.position.x) + " " + str(shroom.position.y))
-	#shroom.prepare_delete()

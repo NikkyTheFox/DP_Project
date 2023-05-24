@@ -167,7 +167,6 @@ colors = PackedColorArray(0, 0, 0, 1, 0.876289, 0.876289, 0.876289, 1, 0.958763,
 gradient = SubResource("Gradient_urycw")
 
 [node name="Player" type="CharacterBody2D"]
-collision_layer = 2
 script = ExtResource("1_u7owm")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -189,16 +188,15 @@ parameters/Idle/blend_position = Vector2(0.983885, 0.0547264)
 parameters/Walk/blend_position = Vector2(-0.00447625, -0.884746)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(2, 28)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_mxov3")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 visible = false
-position = Vector2(-10, 26)
+position = Vector2(-7, 2)
 rotation = -0.00174533
-scale = Vector2(1.90918, 1.60293)
+scale = Vector2(6.2854, 3.56416)
 color = Color(1, 0.996078, 0.988235, 1)
 shadow_enabled = true
 texture = ExtResource("3_x04fk")
@@ -206,8 +204,8 @@ height = 1.0
 
 [node name="PointLight2D2" type="PointLight2D" parent="."]
 visible = false
-position = Vector2(184, 87)
-scale = Vector2(51.4375, -32.5938)
+position = Vector2(34.9997, 27)
+scale = Vector2(88.125, -58.5625)
 blend_mode = 1
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_qi45f")

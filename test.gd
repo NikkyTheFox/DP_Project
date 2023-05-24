@@ -1,10 +1,10 @@
 extends Node
 
-var mushroom_array = [] # found mushrooms
-var picked_up_mushrooms = [] # already picked up mushrooms
-var obstacles_in_game = []
-var freed_players = []
-var players = []
+#var mushroom_array = [] # found mushrooms
+##var picked_up_mushrooms = [] # already picked up mushrooms
+#var obstacles_in_game = []
+#var freed_players = []
+#var players = []
 var new_shroom_pos_x
 var new_shroom_pos_y
 

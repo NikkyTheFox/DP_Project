@@ -1,7 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://bymmo182ln2u6"]
+[gd_scene load_steps=7 format=3 uid="uid://bymmo182ln2u6"]
 
 [ext_resource type="PackedScene" uid="uid://c1wxcyxgetp3p" path="res://background_and_boundaries.tscn" id="1_mrqhq"]
 [ext_resource type="Script" path="res://world.gd" id="1_nv4ob"]
+[ext_resource type="PackedScene" uid="uid://ds82mrs23btxh" path="res://bush.tscn" id="2_kcdk7"]
+[ext_resource type="PackedScene" uid="uid://ddvahstikf6uu" path="res://tree_trunk_1.tscn" id="3_at6gj"]
+[ext_resource type="PackedScene" uid="uid://cm8nb2l2x6k2d" path="res://rock.tscn" id="4_181sw"]
 [ext_resource type="Script" path="res://ScoreLabel.gd" id="9_207ro"]
 
 [node name="World" type="Node2D"]
@@ -9,6 +12,37 @@ script = ExtResource("1_nv4ob")
 
 [node name="Background_and_boundaries" parent="." instance=ExtResource("1_mrqhq")]
 position = Vector2(0, 34)
+
+[node name="Bush" parent="." instance=ExtResource("2_kcdk7")]
+position = Vector2(-486, -176)
+
+[node name="Tree_trunk_1" parent="." instance=ExtResource("3_at6gj")]
+light_mask = 3
+position = Vector2(-156, -18)
+
+[node name="Bush2" parent="." instance=ExtResource("2_kcdk7")]
+position = Vector2(-426, 561)
+
+[node name="Rock" parent="." instance=ExtResource("4_181sw")]
+position = Vector2(289, -52)
+
+[node name="Tree_trunk_2" parent="." instance=ExtResource("3_at6gj")]
+position = Vector2(-273, 795)
+
+[node name="Bush3" parent="." instance=ExtResource("2_kcdk7")]
+position = Vector2(827, 204)
+
+[node name="Bush4" parent="." instance=ExtResource("2_kcdk7")]
+position = Vector2(488, 698)
+
+[node name="Rock2" parent="." instance=ExtResource("4_181sw")]
+position = Vector2(805, 498)
+
+[node name="Tree_trunk_3" parent="." instance=ExtResource("3_at6gj")]
+position = Vector2(1290, 704)
+
+[node name="Rock3" parent="." instance=ExtResource("4_181sw")]
+position = Vector2(1232, 179)
 
 [node name="Camera2D2" type="Camera2D" parent="."]
 position = Vector2(1232, 178)
