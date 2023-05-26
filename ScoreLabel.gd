@@ -9,12 +9,12 @@ func _process(_delta):
 	text = ""
 	if globals.players is Array:
 		for node in globals.players:
-			var shroom
+			#var shroom
 			if is_instance_of(node, EncodedObjectAsID):
 				var test = node.get_object_id()
 				node = instance_from_id(test)
-			else:
-				shroom = node
+			#else:
+			#	shroom = node
 			if node == null: 
 				return
 			text = text + "Player ID: " + str(node.name) + " Score: " + str(node.get_points()) + "\n"

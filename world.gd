@@ -34,7 +34,7 @@ var players = []
 @onready var start_button = $JoinButton/Menu/MarginContainer/VBoxContainer/StartButton
 
 func _ready():
-	set_process(false)
+	set_process(false) # do not run the game until "start" button is pressed
 	globals = get_node("/root/Test")
 	mushroom_create_flag = true
 	mutex = Mutex.new()
@@ -60,16 +60,13 @@ func _process(_delta):
 			mushroom_create_flag = false
 			var time = randi_range(5, 16) # rand time to wait
 			var amount = randi_range(1, 4) # rand amount
-			var num_of_players = 0
-			for node in self.get_children():
-				if 'Player' in node.name:
-					num_of_players += 1		
 			await get_tree().create_timer(time).timeout # wait time
 			print("server grzybki robi")
 			#rpc("initiate_mushrooms", amount * globals.players.size())
 			initiate_mushrooms(amount * players.size())
 			mushroom_create_flag = true
 
+# Create muchrooms
 func initiate_mushrooms(x):
 	if not is_multiplayer_authority():
 		return
@@ -80,13 +77,14 @@ func initiate_mushrooms(x):
 		var pos_y = globals.new_shroom_pos_y
 		rpc("add_new_mushroom", pos_x, pos_y)
 		mutex.unlock()
-		
+
 func _exit_tree():
 	thread.wait_to_finish()
 
 func _thread_function():
 	call_deferred("_process", get_process_delta_time())
-	
+
+# send information from SERVER to all clients about mushroom's position in world
 @rpc("any_peer")
 func sync_shroom_position(obj, pos_x, pos_y):
 	var shroom
@@ -101,18 +99,24 @@ func sync_shroom_position(obj, pos_x, pos_y):
 	shroom.position.y = pos_y
 	
 
+# from SERVER to all clients and server
+# 		add a mushroom to mushroom_array
 @rpc("any_peer", "call_local")
 func append_mushroom_array(obj):
 	self.mushroom_array.append(obj)
-	
+
+# from SERVER to all clients
+# 		add an obstacle to obstacle_array
 @rpc("any_peer")
 func append_obstacles_in_game(obj):
 	self.obstacles_in_game.append(obj)
-	
+
+# from SERVER to all clients and server
 @rpc("any_peer", "call_local")
 func get_players():
 	return self.players
-	
+
+# create a new mushroom node and add it to the world scene
 func add_mushroom(pos_x, pos_y):
 	var mushroom = mushroom_scene.instantiate()
 	mushroom.name = "Mushroom_" + str(mushroom_counter)
@@ -121,11 +125,15 @@ func add_mushroom(pos_x, pos_y):
 	rpc("sync_shroom_position", mushroom, pos_x, pos_y)
 	add_child(mushroom)
 	shroom_list.append(mushroom)
-	
-@rpc("authority","call_local")
+
+# can be called ONLY from SERVER
+# from SERVER to all clients and server
+# add a mushroom
+@rpc("authority", "call_local")
 func add_new_mushroom(pos_x, pos_y):
 	add_mushroom(pos_x,pos_y)
-	
+
+# add new player and set multiplayer_authority (only client can controll the player)
 func add_player(peer_id):
 	peer_list.append(peer_id)
 	var player = player_scene.instantiate()
@@ -134,10 +142,12 @@ func add_player(peer_id):
 	add_child(player)
 	self.players.append(player)
 
+#add new player instance to the client
 @rpc
 func add_new_player(new_peer_id):
 	add_player(new_peer_id)
-	
+
+#add all existing before new connection player instances to the client
 @rpc
 func add_existing_players(peer_ids):
 	for peer_id in peer_ids:
@@ -150,12 +160,14 @@ func remove_player(peer_id):
 	if player:
 		player.queue_free()
 
+# add all Tree_trunks, Rocks and Bushes to an array
 func find_all_obstacles():
 	for node in self.get_children():
 		if 'Bush' in node.name || 'Tree_trunk' in node.name || 'Rock' in node.name: 
 			self.obstacles_in_game.append(node)
 			#print(node.name, " at ", node.position)
 
+# create a client connection to a port
 func _on_join_button_pressed():
 	enet_peer.create_client("localhost", PORT)
 	multiplayer.multiplayer_peer = enet_peer
@@ -163,6 +175,8 @@ func _on_join_button_pressed():
 		menu.hide()
 	#set_process(true)
 
+# create a server and listen to a port
+# add players to server and other clients upon new connection to the port
 func _on_host_button_pressed():
 	join_button.hide()
 	start_button.show()
@@ -175,15 +189,24 @@ func _on_host_button_pressed():
 			rpc("add_new_player", new_peer_id)
 			add_player(new_peer_id)
 	)
-	
-	#add_player(multiplayer.get_unique_id()) # a player on a server
 
+# start the game
 func _on_start_button_pressed():
 	set_process(true)
+	rpc("start_physics_process")
 
+# send SERVER'S mushroom array, obstacles array, players array and freedplayers array to all Clients
 @rpc
 func sync_globals(mush_arr, obstacles_array, freed_players_array, players_array):
 	mushroom_array = mush_arr
 	obstacles_in_game = obstacles_array
 	freed_players = freed_players_array
 	players = players_array
+
+# start physics process (player movement) on all clients
+@rpc
+func start_physics_process():
+	globals = get_node("/root/World")
+	for node in globals.get_children():
+		if "Player" in node.name:
+			node.set_physics_process(true)

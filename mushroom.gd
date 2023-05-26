@@ -16,7 +16,5 @@ func set_pos (x,y):
 
 @rpc("call_local")
 func prepare_delete():
-	var synchronizer = get_node_or_null("MultiplayerSynchronizer")
-	#synchronizer.call_deferred("queue_free")
 	self.call_deferred("queue_free")
 

@@ -44,9 +44,10 @@ func _ready():
 	temp_counter = 0
 	collision_cnt = 1
 	direction_vector = Vector2.ZERO
-	initial_position_before_avoidance = Vector2.ZERO	
+	initial_position_before_avoidance = Vector2.ZERO
+	set_physics_process(false)
 	if not is_multiplayer_authority():
-		set_physics_process(false)
+		# do not run threat if player is created on Server
 		return
 	thread.start(_thread_function) #a player will perform all it's task in new thread
 
@@ -92,59 +93,64 @@ func find_mushrooms():
 
 # Creates direction vector to create movement
 func go_to_mushroom(rand_value):
-	var direction_vector = [0, 0]
+	var vector = [0, 0]
 	var bufer = 1 # to make straight movement
 	# checking x direction
 	if (closest_mushroom.position.x - self.position.x) > bufer:
-		direction_vector[0] = 1
+		vector[0] = 1
 	elif (closest_mushroom.position.x - self.position.x) < -bufer:
-		direction_vector[0] = -1
+		vector[0] = -1
 	else:
-		direction_vector[0] = 0
+		vector[0] = 0
 	# checking y direction
 	if (closest_mushroom.position.y - self.position.y) > bufer:
-		direction_vector[1] = 1
+		vector[1] = 1
 	elif (closest_mushroom.position.y - self.position.y) < -bufer:
-		direction_vector[1] = -1
+		vector[1] = -1
 	else:
-		direction_vector[1] = 0
+		vector[1] = 0
 	
 	# creating diagonal vectors
-	if direction_vector[0] == 1 && direction_vector[1] == 1:
-		direction_vector[0] = 0.7
-		direction_vector[1] = 0.7
-	elif direction_vector[0] == 1 && direction_vector[1] == -1:
-		direction_vector[0] = 0.7
-		direction_vector[1] = -0.7
-	elif direction_vector[0] == -1 && direction_vector[1] == -1:
-		direction_vector[0] = -0.7
-		direction_vector[1] = -0.7
-	elif direction_vector[0] == -1 && direction_vector[1] == 1:
-		direction_vector[0] = -0.7
-		direction_vector[1] = 0.7
+	"""if vector[0] == 1 && vector[1] == 1:
+		vector[0] = 0.7
+		vector[1] = 0.7
+	elif vector[0] == 1 && vector[1] == -1:
+		vector[0] = 0.7
+		vector[1] = -0.7
+	elif vector[0] == -1 && vector[1] == -1:
+		vector[0] = -0.7
+		vector[1] = -0.7
+	elif vector[0] == -1 && vector[1] == 1:
+		vector[0] = -0.7
+		vector[1] = 0.7"""
+		
+	vector[0] = vector[0] * 0.7
+	vector[1] = vector[1] * 0.7
 	
-	direction_vector[0] = direction_vector[0] * rand_value
-	direction_vector[1] = direction_vector[1] * rand_value
-	return direction_vector # direction vector
-	
-	
+	vector[0] = vector[0] * rand_value
+	vector[1] = vector[1] * rand_value
+	return vector # direction vector
+
+# steal points from player with lower num_of_points or set own points to 0
 func fight_with_player(player):
 	if self.num_of_points > player.num_of_points:
-		print("Player ", self.name, " stoled from ", player.name)
+		print("Player ", self.name, " stole from ", player.name)
 		self.num_of_points += player.num_of_points
 		player.num_of_points = 0
 		rpc("remote_sync_points", self.num_of_points)
-	else:
-		self.num_of_points = 0
-		rpc("remote_sync_points", self.num_of_points)
-		
+		rpc("remote_sync_points2", player.name, player.num_of_points)
+	#else:
+	#	self.num_of_points = 0
+	#	rpc("remote_sync_points", self.num_of_points)
+
 # Find all obstacles in the game
-func check_collision_with_obstacles(direction_vector, position):
-	var bufer = 30
+func check_collision_with_obstacles(dir_vector, pos):
+	var hit_buffer = 200
+	var bufer = 30 #30
 	var angle = 0.4
-	var size = 	50
-	var temp0 = direction_vector[0]
-	var temp1 = direction_vector[1]
+	var size = 	50 #50
+	#var temp0 = dir_vector[0]
+	#var temp1 = dir_vector[1]
 	for obstacle in globals.obstacles_in_game:
 		if is_instance_of(obstacle, EncodedObjectAsID):
 			var test = obstacle.get_object_id()
@@ -153,49 +159,87 @@ func check_collision_with_obstacles(direction_vector, position):
 		var left_bound = obstacle.position.x - size - bufer
 		var top_bound = obstacle.position.y - size - bufer
 		var low_bound = obstacle.position.y + size + bufer
-		if position.x >= left_bound && position.x <= right_bound: # between left and right bound
-			if position.y >= top_bound && position.y <= low_bound: # between top and low bound
-				if position.x < obstacle.position.x: # you are on left side of obstacle
-					direction_vector[0] -= angle # run more left
-				elif position.x > obstacle.position.x: # you are on right side of obstacle
-					direction_vector[0] += angle # run more right
-				else: # you are heading straight on obstacle
-					direction_vector[0] = 1 # run 90 degrees
-					direction_vector[1] = 0
-				if position.y < obstacle.position.y: # you are on low (map-top) of obstacle
-					direction_vector[1] -= angle # run more to top of map
-				elif position.y > obstacle.position.y: # you are on top (map-down) of obstacle
-					direction_vector[1] += angle # run more to bottom of map
-				else: # you are heading straight on obstacle
-					direction_vector[1] = 1
-					direction_vector[0] = 0
-				print("Running from [", temp0, " ", temp1, "] to ", direction_vector)
-				self.blocked = true
-				return direction_vector
 		
-	return direction_vector
+		#if player moving torwards obstacle, inside upper and lower bounds of obstacle:
+		if pos.y >= top_bound && pos.y <= low_bound && abs(pos.x - obstacle.position.x) < hit_buffer:
+			if pos.x < obstacle.position.x && dir_vector[0] < 0: # obstacle to the right and moving right
+				var temp_X = dir_vector[0]
+				var temp_Y = dir_vector[1]
+				dir_vector[0] = -temp_Y
+				dir_vector[1] = temp_X
+			if pos.x > obstacle.position.x && dir_vector[0] < 0: # obstacle to the left and moving left
+				var temp_X = dir_vector[0]
+				var temp_Y = dir_vector[1]
+				dir_vector[0] = -temp_Y
+				dir_vector[1] = temp_X
+		#if player moving torwards obstalce, inside left and right bounds:
+		if pos.x >= left_bound && pos.x <= right_bound  && abs(pos.y - obstacle.position.y) < hit_buffer:
+			if pos.y > obstacle.position.y && dir_vector[1] < 0: # obstacle above and moving up
+				var temp_X = dir_vector[0]
+				var temp_Y = dir_vector[1]
+				dir_vector[0] = -temp_Y
+				dir_vector[1] = temp_X
+			if pos.y < obstacle.position.y && dir_vector[1] > 0: # obstacle below and moving down
+				var temp_X = dir_vector[0]
+				var temp_Y = dir_vector[1]
+				dir_vector[0] = -temp_Y
+				dir_vector[1] = temp_X
+
+		"""
+		# player inside obstacle's boundaries:
+		if pos.x >= left_bound && pos.x <= right_bound: # between left and right bound
+			if pos.y >= top_bound && pos.y <= low_bound: # between top and low bound
+				
+				
+				if pos.x == obstacle.position.x:
+					dir_vector[0] = 1 # run 90 degrees right
+					dir_vector[1] = 0
+				if pos.y == obstacle.position.y:
+					dir_vector[1] = 1 # run 90 degrees bottom
+					dir_vector[0] = 0
+				
+				if pos.x < obstacle.position.x: # you are on left side of obstacle
+					dir_vector[0] -= angle # go more to the left
+				elif pos.x > obstacle.position.x: # you are on right side of obstacle
+					dir_vector[0] += angle # go more to the right
+				else: # you are heading straight on obstacle
+					dir_vector[0] = 1 # run 90 degrees right
+					dir_vector[1] = 0
+				if pos.y < obstacle.position.y: # you are on low (map-top) of obstacle
+					dir_vector[1] -= angle # go more to the top of the screen
+				elif pos.y > obstacle.position.y: # you are on top (map-down) of obstacle
+					dir_vector[1] += angle # go more to the bottom of the screen
+				else: # you are heading straight on obstacle
+					dir_vector[1] = 1 # run 90 degrees bottom
+					dir_vector[0] = 0
+				
+				#print("Running from [", temp0, " ", temp1, "] to ", direction_vector)
+				self.blocked = true
+				#dir_vector.normalized()
+				return dir_vector"""
+	return dir_vector
 
 func unblock_movement_to_mushroom():
 	#print("Unblocked:> at pos: ", self.position)
 	self.blocked = false
-	
-func calculate_collision_on_way(direction_vector, position):
-	var bufor = 50
+
+func calculate_collision_on_way(dir_vector, pos):
+	var bufor = 50 #50	
 	if self.blocked == false: # not yet started avoiding collision
-		initial_position_before_avoidance = position
-		direction_vector = check_collision_with_obstacles(direction_vector, position)	
-	elif abs(position.x - initial_position_before_avoidance.x) > bufor && \
-		abs(position.y - initial_position_before_avoidance.y) > bufor:
+		initial_position_before_avoidance = pos
+		dir_vector = check_collision_with_obstacles(dir_vector, pos)	
+	elif abs(pos.x - initial_position_before_avoidance.x) > bufor && \
+		abs(pos.y - initial_position_before_avoidance.y) > bufor:
 		unblock_movement_to_mushroom() # stop avoiding
 	elif self.blocked == true: # still avoiding
-		direction_vector = check_collision_with_obstacles(direction_vector, position)	
-	return direction_vector
+		dir_vector = check_collision_with_obstacles(dir_vector, pos)	
+	return dir_vector
 
-func predict_collisions_on_way(direction_vector, position):
-	var vector = direction_vector
-	for d in range (1, 66):
-		vector = calculate_collision_on_way(vector, position)
-		if vector[0] == direction_vector[0] && vector[1] == direction_vector[1]: # there was no collision:>
+func predict_collisions_on_way(dir_vector, pos):
+	var vector = dir_vector
+	for d in range (1, 2): #calculate position in next step
+		vector = calculate_collision_on_way(vector, pos)
+		if vector[0] == dir_vector[0] && vector[1] == dir_vector[1]: # there was no collision:>
 			pass
 		else:
 			print("FOUND STH !")
@@ -206,20 +250,24 @@ func predict_collisions_on_way(direction_vector, position):
 		if direction_vector[1] > 0: # going down
 			position.y += 1
 		elif direction_vector[1] < 0:
-			position.y -= 1		
+			position.y -= 1	
 	return vector
 
 func _physics_process(delta):
-	if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority(): # disable processing for players that are not controlled by Client
+		set_physics_process(false)		
+		return
 	temp_counter += delta
 	if temp_counter > 1:
 		temp_counter = 0
-		
+	
 	if globals.mushroom_array.is_empty():
 		walking_to_mushroom = false
+		
 	flaga_cnt += 1
 	
-	if flaga_cnt > 40:
+	# do 40 steps to avoid a obstacle that was just hit
+	if flaga_cnt > 10:
 		flaga = false
 		
 	# avoid obstacles
@@ -231,9 +279,9 @@ func _physics_process(delta):
 	# if not found a closest mushroom yet:
 	if walking_to_mushroom == false:
 		closest_mushroom = find_mushrooms()
-
+	
 	# closest mushroom found, movement there:
-	if closest_mushroom != null && self.blocked == false && self.flaga == false:
+	if closest_mushroom != null && blocked == false:
 		direction_vector = go_to_mushroom(1)
 		#print("GOING IN DIR : ", direction_vector)
 		velocity[0] = direction_vector[0] * SPEED
@@ -249,6 +297,13 @@ func _physics_process(delta):
 		animation_tree.set("parameters/Walk/blend_position", velocity)
 	rpc("remote_set_position", global_position)
 	# Collision
+	if flaga:
+		direction_vector[0] = -direction_vector[0]
+		direction_vector[1] = -direction_vector[1]
+		velocity[0] = direction_vector[0] * SPEED
+		velocity[1] = direction_vector[1] * SPEED
+		velocity.normalized()
+		
 	var collision = move_and_collide(velocity * delta)
 	if collision:
 		var obj = collision.get_collider()
@@ -259,18 +314,18 @@ func _physics_process(delta):
 			fight_with_player(obj)
 		else:
 			print("I collided with ", obj.name, " at ", self.position)
-			direction_vector[0] = -direction_vector[0]
-			direction_vector[1] = -direction_vector[1]
+			#direction_vector = check_collision_with_obstacles(direction_vector, self.position)
+			#direction_vector[0] = -direction_vector[0]
+			#direction_vector[1] = -direction_vector[1]
 			flaga = true
 			flaga_cnt = 0
-			
 	else: # no collsion
 		collision_cnt = 1
 		
-#@rpc("call_local")
+
 func pickup_mushroom(obj):
 	var shroom
-	if  is_instance_of(obj, EncodedObjectAsID):
+	if  is_instance_of(obj, EncodedObjectAsID): # needed to get object from objectID
 		var test = obj.get_object_id()
 		shroom = instance_from_id(test)
 		#return
@@ -289,7 +344,7 @@ func pickup_mushroom(obj):
 			return
 		rpc("delete_shroom", shroom.name)
 		print("Picking up a mushroom ", shroom.name)
-		call_deferred("_increase_points")
+		call_deferred("_increase_points") #thread-safe call
 		can_move = true
 		walking_to_mushroom = false
 		rpc("clear_mushroom_array")
@@ -300,26 +355,42 @@ func pickup_mushroom(obj):
 	else:
 		can_move = true
 
+# called upon being deleted from tree, wait for thread to join
 func _exit_tree():
 	thread.wait_to_finish()
 
+# run physics process in new thread
 func _thread_function():
 	call_deferred("_physics_process", get_physics_process_delta_time())
 
+# send a call to Server and other clients to clear their's mushroom_array
 @rpc
 func clear_mushroom_array():
 	globals.mushroom_array.clear()
 
+# send CLIENT'S position to server and other clients
 @rpc("unreliable")
 func remote_set_position(authority_position):
 	global_position = authority_position
-	
+
+# send information about CLIENT'S points to Server and other Clients
 @rpc("unreliable")
 func remote_sync_points(points):
 	self.num_of_points = points
 
+# send info to a Client to set player points to given number
+@rpc("unreliable")
+func remote_sync_points2(player_name, points):
+	var world = get_node("/root/World")
+	if is_multiplayer_authority():
+		for node in world.get_children():
+			if player_name in node.name:
+				node.num_of_points = points
+
+# senc a call to Server and other Clients to delete a given mushroom
+# call it locally too
 @rpc("any_peer", "call_local", "reliable", 1)
-func delete_shroom(name):
-	var shroom = get_parent().get_node_or_null(NodePath(name))
+func delete_shroom(node_name):
+	var shroom = get_parent().get_node_or_null(NodePath(node_name))
 	if shroom == null: return
 	shroom.prepare_delete()

@@ -1,15 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddvahstikf6uu"]
+[gd_scene load_steps=3 format=3 uid="uid://ddvahstikf6uu"]
 
 [ext_resource type="Texture2D" uid="uid://d0xrhun6ori7t" path="res://grafika/tree_trunk_1.png" id="1_0tquq"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qr8n0"]
-radius = 38.0
-height = 122.0
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_qjc3u"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/sync = true
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ll6se"]
+radius = 13.0
 
 [node name="Tree_trunk_1" type="StaticBody2D"]
 
@@ -17,8 +11,4 @@ properties/0/sync = true
 texture = ExtResource("1_0tquq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-2, -1)
-shape = SubResource("CapsuleShape2D_qr8n0")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_qjc3u")
+shape = SubResource("CapsuleShape2D_ll6se")

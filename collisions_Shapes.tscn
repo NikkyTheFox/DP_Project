@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5mc2ljbvuuhi"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bbgfs"]
+radius = 30.0
+height = 82.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b05os"]
+radius = 21.0
+height = 70.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gu2ro"]
+radius = 25.0
+height = 80.0
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Tree" type="Node" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tree"]
+visible = false
+position = Vector2(-6, 3)
+shape = SubResource("CapsuleShape2D_bbgfs")
+
+[node name="Rock" type="Node" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Rock"]
+visible = false
+position = Vector2(8, 15)
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_b05os")
+
+[node name="Bush" type="Node" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bush"]
+visible = false
+position = Vector2(-3, 7)
+rotation = -1.5708
+scale = Vector2(1, 0.85)
+shape = SubResource("CapsuleShape2D_gu2ro")
