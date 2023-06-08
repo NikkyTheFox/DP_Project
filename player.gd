@@ -14,8 +14,8 @@ var mutex
 var direction_vector
 var temp_counter
 var initial_position_before_avoidance
-
-
+var stealing_cnt
+var collision_flag
 var peer # needed to be a client
 
 # some new shit
@@ -38,11 +38,13 @@ func _ready():
 	closest_mushroom = null
 	blocked = false
 	flaga = false
+	collision_flag = false
 	flaga_cnt = 0
 	mutex = Mutex.new()
 	thread = Thread.new()
 	temp_counter = 0
 	collision_cnt = 1
+
 	direction_vector = Vector2.ZERO
 	initial_position_before_avoidance = Vector2.ZERO
 	set_physics_process(false)
@@ -90,6 +92,32 @@ func find_mushrooms():
 	walking_to_mushroom = true
 	
 	return closest_mushroom # returns mushroom with the smallest distance to go to
+	
+	# Function to find all mushrooms + calculate distance + find closest one
+func find_second_closest_mushrooms():
+	mutex.lock()
+	globals.mushroom_array.clear()
+	for node in self.get_parent().get_children():
+		if 'Mushroom' in node.name && node not in globals.mushroom_array:
+			globals.mushroom_array.append(node)
+	mutex.unlock()
+	
+	var playerx = self.position.x
+	var playery = self.position.y
+	var min_distance = 10000
+	var closest = globals.mushroom_array[0]
+	var pre_closest_mushroom = globals.mushroom_array[0]
+	
+	for mushroom in globals.mushroom_array:
+		var x = (playerx - mushroom.position.x) * (playerx - mushroom.position.x) 
+		var y = (playery - mushroom.position.y) * (playery - mushroom.position.y) 
+		if sqrt(x + y) < min_distance:
+			min_distance = sqrt(x + y)
+			pre_closest_mushroom = closest
+			closest = mushroom
+	walking_to_mushroom = true
+	
+	return globals.mushroom_array[0] # returns mushroom with the smallest distance to go to
 
 # Creates direction vector to create movement
 func go_to_mushroom(rand_value):
@@ -132,13 +160,17 @@ func go_to_mushroom(rand_value):
 	return vector # direction vector
 
 # steal points from player with lower num_of_points or set own points to 0
-func fight_with_player(player):
+func fight_with_player(player, direction_vector):
 	if self.num_of_points > player.num_of_points:
 		print("Player ", self.name, " stole from ", player.name)
 		self.num_of_points += player.num_of_points
 		player.num_of_points = 0
 		rpc("remote_sync_points", self.num_of_points)
 		rpc("remote_sync_points2", player.name, player.num_of_points)
+		return direction_vector
+	else:
+		collision_flag = true
+		return direction_vector
 	#else:
 	#	self.num_of_points = 0
 	#	rpc("remote_sync_points", self.num_of_points)
@@ -155,6 +187,8 @@ func check_collision_with_obstacles(dir_vector, pos):
 		if is_instance_of(obstacle, EncodedObjectAsID):
 			var test = obstacle.get_object_id()
 			obstacle = instance_from_id(test)
+		if obstacle == null:
+			break;
 		var right_bound = obstacle.position.x + size + bufer
 		var left_bound = obstacle.position.x - size - bufer
 		var top_bound = obstacle.position.y - size - bufer
@@ -255,8 +289,9 @@ func predict_collisions_on_way(dir_vector, pos):
 
 func _physics_process(delta):
 	if not is_multiplayer_authority(): # disable processing for players that are not controlled by Client
-		set_physics_process(false)		
+		set_physics_process(false)
 		return
+		
 	temp_counter += delta
 	if temp_counter > 1:
 		temp_counter = 0
@@ -267,7 +302,7 @@ func _physics_process(delta):
 	flaga_cnt += 1
 	
 	# do 40 steps to avoid a obstacle that was just hit
-	if flaga_cnt > 10:
+	if flaga_cnt > 40:
 		flaga = false
 		
 	# avoid obstacles
@@ -280,6 +315,10 @@ func _physics_process(delta):
 	if walking_to_mushroom == false:
 		closest_mushroom = find_mushrooms()
 	
+	if collision_flag == true:
+		closest_mushroom = find_second_closest_mushrooms()
+		print("WALKING TO SECOND MUSH")
+	
 	# closest mushroom found, movement there:
 	if closest_mushroom != null && blocked == false:
 		direction_vector = go_to_mushroom(1)
@@ -287,6 +326,7 @@ func _physics_process(delta):
 		velocity[0] = direction_vector[0] * SPEED
 		velocity[1] = direction_vector[1] * SPEED
 		velocity.normalized()	
+		
 	
 	# Changing animations
 	if velocity == Vector2.ZERO:
@@ -309,9 +349,10 @@ func _physics_process(delta):
 		var obj = collision.get_collider()
 		# Picking up mushrooms
 		if 'Mushroom' in obj.name:
-			call_deferred("pickup_mushroom",obj)
+			call_deferred("pickup_mushroom", obj)
+			collision_flag = false
 		elif 'Player' in obj.name:
-			fight_with_player(obj)
+			direction_vector = fight_with_player(obj, direction_vector)
 		else:
 			print("I collided with ", obj.name, " at ", self.position)
 			#direction_vector = check_collision_with_obstacles(direction_vector, self.position)
@@ -319,8 +360,8 @@ func _physics_process(delta):
 			#direction_vector[1] = -direction_vector[1]
 			flaga = true
 			flaga_cnt = 0
-	else: # no collsion
-		collision_cnt = 1
+	#else: # no collsion
+		
 		
 
 func pickup_mushroom(obj):

@@ -16,6 +16,9 @@ var shroom_list = []
 var game_init_bool = false
 var game_init_2_bool = false
 
+var new_shroom_pos_x
+var new_shroom_pos_y
+
 # needed to host as a server
 const PORT = 9999
 var enet_peer = ENetMultiplayerPeer.new()
@@ -73,10 +76,18 @@ func initiate_mushrooms(x):
 	for i in x:
 		mutex.lock()
 		globals.new_shroom_pos(multiplayer.get_unique_id())
+		#new_shroom_pos(multiplayer.get_unique_id())
 		var pos_x = globals.new_shroom_pos_x
 		var pos_y = globals.new_shroom_pos_y
+		#var pos_x = new_shroom_pos_x
+		#var pos_y = new_shroom_pos_y
 		rpc("add_new_mushroom", pos_x, pos_y)
 		mutex.unlock()
+
+func new_shroom_pos(peer_id):
+	if peer_id == 1:
+		new_shroom_pos_x = randi_range(-600, 1900)
+		new_shroom_pos_y = randi_range(-300, 1000)
 
 func _exit_tree():
 	thread.wait_to_finish()
@@ -169,7 +180,7 @@ func find_all_obstacles():
 
 # create a client connection to a port
 func _on_join_button_pressed():
-	enet_peer.create_client("localhost", PORT)
+	enet_peer.create_client("192.168.170.254", PORT)
 	multiplayer.multiplayer_peer = enet_peer
 	if multiplayer.is_server():
 		menu.hide()
@@ -192,7 +203,9 @@ func _on_host_button_pressed():
 
 # start the game
 func _on_start_button_pressed():
+	print("START")
 	set_process(true)
+	start_physics_process()
 	rpc("start_physics_process")
 
 # send SERVER'S mushroom array, obstacles array, players array and freedplayers array to all Clients
@@ -207,6 +220,9 @@ func sync_globals(mush_arr, obstacles_array, freed_players_array, players_array)
 @rpc
 func start_physics_process():
 	globals = get_node("/root/World")
+	print("globals")
 	for node in globals.get_children():
+		print(node.name)
 		if "Player" in node.name:
+			print("found playa")
 			node.set_physics_process(true)
