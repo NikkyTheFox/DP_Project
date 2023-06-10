@@ -326,7 +326,7 @@ func _physics_process(delta):
 		velocity[0] = direction_vector[0] * SPEED
 		velocity[1] = direction_vector[1] * SPEED
 		velocity.normalized()	
-		
+
 	
 	# Changing animations
 	if velocity == Vector2.ZERO:
@@ -348,7 +348,8 @@ func _physics_process(delta):
 	if collision:
 		var obj = collision.get_collider()
 		# Picking up mushrooms
-		if 'Mushroom' in obj.name:
+		if 'Mushroom' in obj.name && obj.is_taken() == false:
+			call_deferred("call_taken", obj)
 			call_deferred("pickup_mushroom", obj)
 			collision_flag = false
 		elif 'Player' in obj.name:
@@ -377,6 +378,8 @@ func pickup_mushroom(obj):
 	self.blocked = false
 	animation_tree.get("parameters/playback").travel("Idle")
 	velocity = Vector2.ZERO
+	rpc("clear_mushroom_array")
+	globals.mushroom_array.clear()
 	await get_tree().create_timer(3.0).timeout # wait time 
 	if shroom != null:				
 		mutex.lock() #lock mutex in order to prevent changes by other players
@@ -388,8 +391,8 @@ func pickup_mushroom(obj):
 		call_deferred("_increase_points") #thread-safe call
 		can_move = true
 		walking_to_mushroom = false
-		rpc("clear_mushroom_array")
-		globals.mushroom_array.clear()
+		#rpc("clear_mushroom_array")
+		#globals.mushroom_array.clear()
 		closest_mushroom = null
 		mutex.unlock()
 		#print("I ve unlocked the world, feel free to act on your own will")

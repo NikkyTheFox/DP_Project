@@ -21,6 +21,7 @@ var new_shroom_pos_y
 
 # needed to host as a server
 const PORT = 9999
+var ip = "127.0.0.1"
 var enet_peer = ENetMultiplayerPeer.new()
 var player_scene = preload("res://player.tscn")
 
@@ -178,12 +179,18 @@ func find_all_obstacles():
 			self.obstacles_in_game.append(node)
 			#print(node.name, " at ", node.position)
 
+func _on_ok_button_pressed():
+	var line = get_node("TextureRect/LineEdit")
+	ip = line.text
+	print(ip)
+
 # create a client connection to a port
 func _on_join_button_pressed():
-	enet_peer.create_client("192.168.170.254", PORT)
+	enet_peer.create_client(ip, PORT)
 	multiplayer.multiplayer_peer = enet_peer
 	if multiplayer.is_server():
 		menu.hide()
+	get_node("TextureRect").queue_free()
 	#set_process(true)
 
 # create a server and listen to a port
@@ -200,6 +207,7 @@ func _on_host_button_pressed():
 			rpc("add_new_player", new_peer_id)
 			add_player(new_peer_id)
 	)
+	get_node("TextureRect").queue_free()
 
 # start the game
 func _on_start_button_pressed():
